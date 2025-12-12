@@ -1,4 +1,5 @@
-let carrinho = []; // Array principal para armazenar os itens
+// Tenta pegar o que está salvo no navegador. Se não tiver nada, cria um array vazio.
+let carrinho = JSON.parse(localStorage.getItem('carrinho_compras')) || [];
 
 // =================================================================
 // FUNÇÃO PARA GERAR O HTML DOS PRODUTOS
@@ -79,6 +80,12 @@ function alterarQuantidadeCarrinho(inputElement, index) {
 // ----------------------------------------------------
 
 function atualizarCarrinhoHTML() {
+    // -----------------------------------------------------------
+    // NSalva o estado atual do carrinho no navegador
+    // Sempre que essa função rodar (adicionar, remover, alterar), ele salva.
+    localStorage.setItem('carrinho_compras', JSON.stringify(carrinho));
+    // -----------------------------------------------------------
+
     const lista = document.getElementById('lista-carrinho');
     const totalItensSpan = document.getElementById('total-itens');
     const valorTotalSpan = document.getElementById('valor-total');
@@ -147,7 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
     filtrarColecao('todos');
 
     // 3. ATIVAR BOTÕES "ADICIONAR AO CARRINHO"
-    // (Precisamos fazer isso aqui, pois os botões acabaram de ser criados)
     document.querySelectorAll('.adicionar-carrinho').forEach(button => {
         button.addEventListener('click', function() {
             const nome = this.getAttribute('data-nome');
@@ -171,8 +177,16 @@ document.addEventListener('DOMContentLoaded', () => {
             carrinho.push(item);
             atualizarCarrinhoHTML();
             
-            // Feedback visual simples (Opcional)
-            alert(`${nome} adicionado ao carrinho!`);
+            // --- MELHORIA: Feedback Visual no Botão (Sem alerta chato) ---
+            const textoOriginal = this.innerText; // Guarda o texto original
+            this.innerText = "✓ Adicionado!";     // Muda o texto
+            this.style.backgroundColor = "#25d366"; // Muda para verde (sucesso)
+            
+            // Depois de 1.5 segundos, volta ao normal
+            setTimeout(() => {
+                this.innerText = textoOriginal;
+                this.style.backgroundColor = ""; // Volta a cor do CSS
+            }, 1500);
         });
     });
 
