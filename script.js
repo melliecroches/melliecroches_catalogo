@@ -1,5 +1,53 @@
 let carrinho = []; // Array principal para armazenar os itens
 
+// =================================================================
+// FUNÇÃO PARA GERAR O HTML DOS PRODUTOS
+// (A variável 'produtos' vem do arquivo produtos.js, carregado antes)
+// =================================================================
+
+function renderizarCatalogo() {
+    // Verifica se a lista de produtos foi carregada corretamente
+    if (typeof produtos === 'undefined') {
+        console.error("Erro: O arquivo produtos.js não foi carregado!");
+        return;
+    }
+
+    produtos.forEach(produto => {
+        // Encontra a seção correta (verao, classicos, etc)
+        const secaoDestino = document.getElementById(produto.categoria);
+        
+        if (secaoDestino) {
+            // Cria o HTML das opções de cores
+            let opcoesCores = produto.cores.map(cor => `<option value="${cor}">${cor}</option>`).join('');
+
+            // Cria o card HTML
+            const cardHTML = `
+                <div class="brinco-card">
+                    <img src="${produto.imagem}" alt="${produto.nome}" loading="lazy">
+                    <div class="card-detalhes">
+                        <h3>${produto.nome}</h3>
+                        <p class="preco">R$ ${produto.preco.toFixed(2).replace('.', ',')}</p>
+                        
+                        <label for="cor-${produto.id}">Cor:</label>
+                        <select id="cor-${produto.id}">
+                            ${opcoesCores}
+                        </select>
+
+                        <label for="qtd-${produto.id}">Qtd:</label>
+                        <input type="number" id="qtd-${produto.id}" value="1" min="1" max="100" class="input-quantidade">
+
+                        <button class="adicionar-carrinho" data-nome="${produto.nome}" data-preco="${produto.preco}">
+                            Adicionar ao Carrinho
+                        </button>
+                    </div>
+                </div>
+            `;
+            secaoDestino.insertAdjacentHTML('beforeend', cardHTML);
+        }
+    });
+}
+
+
 // ----------------------------------------------------
 // FUNÇÃO NOVIDADE: Altera a Quantidade no Carrinho
 // ----------------------------------------------------
@@ -87,8 +135,19 @@ function removerItemCarrinho(index) {
     atualizarCarrinhoHTML(); 
 }
 
-// Escuta o clique nos botões "Adicionar"
+// =================================================================
+// 3. INICIALIZAÇÃO (CARREGA TUDO NA ORDEM CERTA)
+// =================================================================
+
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. Primeiro desenhamos os produtos na tela
+    renderizarCatalogo();
+    
+    // 2. Iniciamos o filtro (começa misturado)
+    filtrarColecao('todos');
+
+    // 3. ATIVAR BOTÕES "ADICIONAR AO CARRINHO"
+    // (Precisamos fazer isso aqui, pois os botões acabaram de ser criados)
     document.querySelectorAll('.adicionar-carrinho').forEach(button => {
         button.addEventListener('click', function() {
             const nome = this.getAttribute('data-nome');
@@ -96,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const cardDetalhes = this.closest('.card-detalhes'); 
             const selectCor = cardDetalhes.querySelector('select'); 
-            const corSelecionada = selectCor ? selectCor.value : 'Cor Padrão';
+            const corSelecionada = selectCor ? selectCor.value : 'Padrão';
             
             const inputQtd = cardDetalhes.querySelector('.input-quantidade');
             const quantidade = parseInt(inputQtd.value) || 1; 
@@ -111,9 +170,26 @@ document.addEventListener('DOMContentLoaded', () => {
             
             carrinho.push(item);
             atualizarCarrinhoHTML();
+            
+            // Feedback visual simples (Opcional)
+            alert(`${nome} adicionado ao carrinho!`);
         });
     });
 
+    // 4. ATIVAR LIGHTBOX (ZOOM NA IMAGEM)
+    // (Mesma lógica: precisamos reativar pois as imagens são novas)
+    const lightbox = document.getElementById('lightbox');
+    const imagemDestaque = document.getElementById('imagem-destaque');
+    const imagensProdutos = document.querySelectorAll('.brinco-card img');
+
+    imagensProdutos.forEach(img => {
+        img.addEventListener('click', function() {
+            lightbox.style.display = 'flex';
+            imagemDestaque.src = this.src;
+        });
+    });
+
+    // Atualiza carrinho caso tenha sobrado algo (se implementar localStorage depois)
     atualizarCarrinhoHTML();
 });
 
@@ -206,71 +282,40 @@ function fecharLightbox(event) {
 }
 
 // ----------------------------------------------------
-// FUNCIONALIDADE: NAVEGAÇÃO POR COLEÇÕES (MENU)
-// ----------------------------------------------------
-
-function filtrarColecao(categoriaId) {
-    // 1. Pega todas as seções de coleção
-    const todasColecoes = document.querySelectorAll('.colecao');
-    
-    // 2. Lógica de Mostrar/Esconder
-    todasColecoes.forEach(colecao => {
-        if (categoriaId === 'todos') {
-            // Se for 'todos', remove a classe que esconde
-            colecao.classList.remove('escondido');
-        } else {
-            // Se o ID da coleção for igual ao botão clicado, mostra. Senão, esconde.
-            if (colecao.id === categoriaId) {
-                colecao.classList.remove('escondido');
-            } else {
-                colecao.classList.add('escondido');
-            }
-        }
-    });
-
-    // 3. Atualiza o visual dos botões (deixa branco o que foi clicado)
-    const botoes = document.querySelectorAll('.btn-menu');
-    botoes.forEach(btn => {
-        // Remove a classe 'ativo' de todos
-        btn.classList.remove('ativo');
-        
-        // Verifica se o texto do botão ou onclick corresponde à categoria atual (truque simples)
-        if (btn.getAttribute('onclick').includes(categoriaId)) {
-            btn.classList.add('ativo');
-        }
-    });
-}
-
-// ----------------------------------------------------
-// FUNCIONALIDADE: FILTRO DE COLEÇÕES (MISTURADO)
+// FUNCIONALIDADE: FILTRO DE COLEÇÕES (UNIFICADO)
 // ----------------------------------------------------
 
 function filtrarColecao(categoriaId) {
     const mainContainer = document.getElementById('catalogo-principal');
     const todasColecoes = document.querySelectorAll('.colecao');
+    const botoes = document.querySelectorAll('.btn-menu');
     
-    // Atualiza botões do menu
-    document.querySelectorAll('.btn-menu').forEach(btn => {
+    // 1. Atualiza o visual dos botões do menu (quem fica branco/ativo)
+    botoes.forEach(btn => {
         btn.classList.remove('ativo');
+        
+        // Verifica se o botão clicado corresponde à categoria atual
         if (btn.getAttribute('onclick').includes(categoriaId)) {
             btn.classList.add('ativo');
         }
     });
 
+    // 2. Lógica de Mostrar/Esconder
     if (categoriaId === 'todos') {
         // MODO MISTURADO:
-        // 1. Adiciona classe ao Main para ativar o CSS especial
+        // Adiciona classe ao Main para ativar o CSS especial (display: contents)
+        // Isso faz os produtos se misturarem visualmente e esconde os títulos das coleções
         mainContainer.classList.add('modo-misturado');
         
-        // 2. Garante que todas as seções estejam visíveis (mas sem headers, via CSS)
+        // Garante que todas as seções estejam visíveis no HTML
         todasColecoes.forEach(col => col.classList.remove('escondido'));
         
     } else {
         // MODO COLEÇÃO ESPECÍFICA:
-        // 1. Remove o modo misturado (volta ao normal)
+        // Remove o modo misturado (volta ao layout normal separado por blocos)
         mainContainer.classList.remove('modo-misturado');
         
-        // 2. Esconde quem não é a escolhida e mostra a escolhida
+        // Esconde as coleções que não foram escolhidas
         todasColecoes.forEach(col => {
             if (col.id === categoriaId) {
                 col.classList.remove('escondido');
@@ -281,7 +326,7 @@ function filtrarColecao(categoriaId) {
     }
 }
 
-// Inicia a página no modo misturado (opcional)
+// Inicia a página no modo misturado ("Ver Tudo")
 document.addEventListener('DOMContentLoaded', () => {
     filtrarColecao('todos');
 });
