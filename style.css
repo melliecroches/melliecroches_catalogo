@@ -474,9 +474,10 @@ button.adicionar-carrinho:hover { background-color: #a30052; }
 @media (max-width: 768px) {
     /* ... (Regras de mobile inalteradas) ... */
     
-    /* Garante que os dois botões fiquem com a largura total no mobile expandido */
     #limpar-carrinho, #finalizar-compra {
         margin-top: 10px;
+        display: block; /* Garante que cada botão ocupe sua própria linha */
+        width: 100%;    /* Garante largura total */
     }
 }
 
@@ -670,11 +671,11 @@ button.adicionar-carrinho:hover { background-color: #a30052; }
         background-color: #e0e0e0;
         border-radius: 10px;
     }
-    #carrinho-lateral.expandido .carrinho-conteudo { display: block; overflow-y: auto; }
-    
     #carrinho-lateral.expandido .carrinho-conteudo { 
         display: block; 
         overflow-y: auto; 
+        /* ⬇️ NOVO: ADICIONAR ESTA LINHA ⬇️ */
+        padding-bottom: 30px; /* Dá espaço para os botões aparecerem no final */
     }
 
     #btn-topo {
