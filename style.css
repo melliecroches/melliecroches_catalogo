@@ -6,8 +6,7 @@ body {
     margin: 0;
     background-color: #f4f4f4;
     
-    /* Mude de 210px para 190px */
-    padding-top: 190px; 
+    padding-top: 0; 
     
     min-height: 100vh;
 }
@@ -377,19 +376,58 @@ button.adicionar-carrinho:hover { background-color: #a30052; }
     /* MANTÉM: Coloca Conteúdo e Carrinho um embaixo do outro */
     .container-principal, .layout-geral { flex-direction: column; }
     
-    /* AJUSTE: FORÇA OS CARDS A FICAREM EM 2 COLUNAS */
-    .colecao {
-        gap: 10px; 
-        justify-content: space-between; 
-        padding: 0; /* Garante que a coleção não tenha padding extra */
+    /* Dentro do @media (max-width: 768px) */
+
+    /* Container das coleções: Garante 2 colunas alinhadas */
+    .colecao, #catalogo-principal.modo-misturado {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px; /* Espaço menor entre os cards */
+        justify-content: center; /* Centraliza */
+        padding: 0 5px;
+    }
+
+    /* O Card em si */
+    .brinco-card {
+        /* 48% garante que fiquem 2 por linha com uma folga minúscula */
+        flex: 0 0 48%; 
+        max-width: 48%;
+        padding: 8px; /* Borda interna menor */
+        margin: 0;    /* Remove margens externas */
+    }
+
+    /* A Imagem do Produto */
+    .brinco-card img {
+        /* Reduzi drasticamente a altura para caber mais itens na vertical */
+        height: 140px; 
+        margin-bottom: 5px;
+    }
+
+    /* Textos menores para economizar espaço */
+    .brinco-card h3 {
+        font-size: 0.9rem; /* Nome do brinco menor */
+        margin: 5px 0;
+        white-space: nowrap; /* Não deixa quebrar linha */
+        overflow: hidden;
+        text-overflow: ellipsis; /* Põe "..." se o nome for longo */
+    }
+
+    .preco {
+        font-size: 0.9rem;
+        margin: 2px 0 8px 0;
+    }
+
+    /* Botão de adicionar mais compacto */
+    button.adicionar-carrinho {
+        padding: 8px;
+        font-size: 0.8rem;
     }
     
-    .brinco-card {
-        /* CORREÇÃO: Usamos 48% para ser BEM seguro e garantir o espaço */
-        flex: 0 0 40%; 
-        max-width: 40%;
-        padding: 10px; 
-        margin: 5px 0; /* Adiciona uma pequena margem vertical */
+    /* Inputs menores */
+    .brinco-card select, .brinco-card input {
+        font-size: 0.8rem;
+        padding: 3px;
+        margin-bottom: 5px;
     }
 
     /* O restante das regras do carrinho no mobile... */
@@ -436,14 +474,18 @@ button.adicionar-carrinho:hover { background-color: #a30052; }
 
 .modal-conteudo {
     background-color: #fff;
-    margin: 5% auto; /* Um pouco mais para cima */
-    padding: 30px;
+    margin: 20px auto; /* Margem menor para caber melhor */
+    padding: 20px;     /* Padding um pouco menor */
     border-radius: 12px;
     width: 90%;
-    max-width: 450px; /* Um pouco mais largo */
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    max-width: 450px;
     position: relative;
-    border: 1px solid #f0f0f0;
+    
+    /* --- O SEGREDO PARA NÃO CORTAR NO CELULAR --- */
+    max-height: 85vh; /* Ocupa no máximo 85% da altura da tela */
+    overflow-y: auto; /* Cria rolagem se o conteúdo for grande */
+    display: flex;
+    flex-direction: column;
 }
 
 /* Título do Modal */

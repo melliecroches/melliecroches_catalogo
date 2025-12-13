@@ -483,3 +483,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// =================================================================
+// CORREÇÃO VISUAL: AJUSTE DO TOPO (HEADER)
+// =================================================================
+
+function ajustarTopoBody() {
+    const header = document.querySelector('header');
+    if (header) {
+        // Pega a altura real do header e adiciona 20px de respiro
+        const alturaHeader = header.offsetHeight;
+        document.body.style.paddingTop = (alturaHeader + 20) + 'px';
+        
+        // Ajusta também a posição do carrinho lateral para não bater no header
+        const carrinho = document.getElementById('carrinho-lateral');
+        if (carrinho && window.innerWidth > 768) {
+            carrinho.style.top = (alturaHeader + 20) + 'px';
+            carrinho.style.height = `calc(100vh - ${alturaHeader + 20}px)`;
+        }
+    }
+}
+
+// Roda a função quando a página carrega
+window.addEventListener('load', ajustarTopoBody);
+
+// Roda de novo se a pessoa girar a tela ou redimensionar
+window.addEventListener('resize', ajustarTopoBody);
