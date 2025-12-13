@@ -1,6 +1,10 @@
 /* ===================================================
    RESET E CONFIGURAÇÕES GERAIS
    =================================================== */
+html {
+    overflow-y: scroll; /* A barra de rolagem fica sempre visível, evitando pulos laterais */
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -370,82 +374,158 @@ button.adicionar-carrinho:hover { background-color: #a30052; }
 .aviso-destaque { color: #ffeb3b; font-weight: bold; }
 
 /* ===================================================
-   MOBILE
+   MOBILE (CELULAR) - ATUALIZADO
    =================================================== */
 @media (max-width: 768px) {
-    /* MANTÉM: Coloca Conteúdo e Carrinho um embaixo do outro */
-    .container-principal, .layout-geral { flex-direction: column; }
     
-    /* Dentro do @media (max-width: 768px) */
+    /* 1. LAYOUT GERAL */
+    .container-principal, .layout-geral { flex-direction: column; }
+    #catalogo-principal { padding: 0; }
 
-    /* Container das coleções: Garante 2 colunas alinhadas */
+    /* ==========================================
+       2. CORREÇÃO DOS TÍTULOS (Definitiva)
+       ========================================== */
+    
+    /* Estilo visual (Centralização e Margens) */
+    .cabecalho-colecao, #cabecalho-todos {
+        width: 100%;
+        margin: 15px 0 20px 0;
+        min-height: 40px;
+        align-items: center;
+        justify-content: center;
+        /* NÃO colocamos 'display: flex' aqui para não forçar a exibição */
+    }
+
+    .cabecalho-colecao h2, #cabecalho-todos h2 {
+        text-align: center; /* Garante que o texto fique no meio */
+        width: 100%;        /* Ocupa a largura total */
+        margin: 0;
+        font-size: 1.3rem;
+        border-bottom: 2px solid #eee;
+        padding-bottom: 8px;
+        color: #cc0066;
+    }
+
+    /* --- LÓGICA DE EXIBIÇÃO (QUEM APARECE QUANDO) --- */
+
+    /* CASO 1: MODO "VER TUDO" (MISTURADO) */
+    /* Mostra o título "Todos os Brincos" */
+    #catalogo-principal.modo-misturado #cabecalho-todos {
+        display: flex !important;
+    }
+    /* Esconde os títulos das coleções individuais (Verão/Clássicos) */
+    /* (Assim os produtos aparecem misturados, mas sem aqueles títulos no meio) */
+    #catalogo-principal.modo-misturado .cabecalho-colecao {
+        display: none !important;
+    }
+
+    /* CASO 2: MODO "COLEÇÃO ESPECÍFICA" */
+    /* Esconde o título "Todos os Brincos" */
+    #catalogo-principal:not(.modo-misturado) #cabecalho-todos {
+        display: none !important;
+    }
+    /* O título da coleção (ex: Verão) aparecerá automaticamente
+       porque ele está dentro da section que ficou visível */
+       
+    /* 3. GRID DE PRODUTOS (Mantendo 4 na tela) */
     .colecao, #catalogo-principal.modo-misturado {
         display: flex;
         flex-wrap: wrap;
-        gap: 8px; /* Espaço menor entre os cards */
-        justify-content: center; /* Centraliza */
-        padding: 0 5px;
+        gap: 8px; 
+        justify-content: center;
+        padding: 0 5px 80px 5px; /* 80px embaixo pro botão do carrinho não tapar nada */
+        width: 100%;
+        box-sizing: border-box;
     }
 
-    /* O Card em si */
     .brinco-card {
-        /* 48% garante que fiquem 2 por linha com uma folga minúscula */
         flex: 0 0 48%; 
-        max-width: 48%;
-        padding: 8px; /* Borda interna menor */
-        margin: 0;    /* Remove margens externas */
-    }
-
-    /* A Imagem do Produto */
-    .brinco-card img {
-        /* Reduzi drasticamente a altura para caber mais itens na vertical */
-        height: 140px; 
-        margin-bottom: 5px;
-    }
-
-    /* Textos menores para economizar espaço */
-    .brinco-card h3 {
-        font-size: 0.9rem; /* Nome do brinco menor */
-        margin: 5px 0;
-        white-space: nowrap; /* Não deixa quebrar linha */
-        overflow: hidden;
-        text-overflow: ellipsis; /* Põe "..." se o nome for longo */
-    }
-
-    .preco {
-        font-size: 0.9rem;
-        margin: 2px 0 8px 0;
-    }
-
-    /* Botão de adicionar mais compacto */
-    button.adicionar-carrinho {
+        max-width: 48%; 
         padding: 8px;
-        font-size: 0.8rem;
+        margin: 0;
     }
+
+    .brinco-card img {
+        height: 130px; 
+        object-fit: cover;
+    }
+
+    .brinco-card h3 {
+        font-size: 0.85rem;
+        margin: 5px 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .preco { font-size: 0.9rem; margin: 2px 0 8px 0; }
     
-    /* Inputs menores */
-    .brinco-card select, .brinco-card input {
+    .card-detalhes select, .card-detalhes input {
+        padding: 2px;
         font-size: 0.8rem;
-        padding: 3px;
+        height: 25px;
         margin-bottom: 5px;
     }
 
-    /* O restante das regras do carrinho no mobile... */
+    button.adicionar-carrinho {
+        padding: 6px;
+        font-size: 0.75rem;
+    }
+
+    /* 4. BOTÃO DO CARRINHO (BOLINHA PEQUENA) */
     #carrinho-lateral {
-        position: fixed !important; bottom: 20px !important; right: 20px !important; top: auto !important;
-        width: auto !important; height: auto !important; min-width: 0 !important;
-        background: #25d366; color: white; border-radius: 50px; padding: 15px; z-index: 2000;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        position: fixed !important;
+        bottom: 20px !important;
+        right: 20px !important;
+        top: auto !important;
+        
+        /* Transforma em bolinha */
+        width: 60px !important;
+        height: 60px !important;
+        min-width: 0 !important;
+        border-radius: 50% !important;
+        
+        padding: 0 !important; /* Sem padding para centralizar o ícone */
+        background: #25d366;
+        color: white;
+        z-index: 2000;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+        
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Efeito elástico */
     }
-    #carrinho-lateral .carrinho-conteudo { display: none; }
-    #carrinho-lateral:not(.expandido) h2 { font-size: 0; margin: 0; }
-    #carrinho-lateral:not(.expandido) h2::after { content: "Ver Carrinho"; font-size: 1rem; white-space: nowrap; }
     
-    #carrinho-lateral.expandido {
-        width: 90% !important; bottom: 50px !important; right: 5% !important; background: #fff8e1;
-        border-radius: 15px; display: flex; flex-direction: column; color: black;
+    /* Estado FECHADO (Apenas ícone) */
+    #carrinho-lateral:not(.expandido) h2 { display: none; }
+    #carrinho-lateral:not(.expandido) .carrinho-conteudo { display: none; }
+    
+    /* Ícone da sacola usando CSS ::after */
+    #carrinho-lateral:not(.expandido)::after {
+        content: "🛍️"; 
+        font-size: 28px;
     }
-    #carrinho-lateral.expandido .carrinho-conteudo { display: block; }
+
+    /* Estado EXPANDIDO (Abre a lista) */
+    #carrinho-lateral.expandido {
+        width: 90% !important;
+        height: auto !important;
+        max-height: 80vh;
+        bottom: 20px !important;
+        right: 5% !important;
+        border-radius: 15px !important;
+        background: white;
+        padding: 20px !important;
+        color: black;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+    
+    #carrinho-lateral.expandido::after { content: ""; } /* Remove o ícone gigante */
+    #carrinho-lateral.expandido h2 { display: block; font-size: 1.2rem; border-bottom: 1px solid #eee; margin-bottom: 10px; }
+    #carrinho-lateral.expandido .carrinho-conteudo { display: block; overflow-y: auto; }
 }
 
 /* OUTROS */
