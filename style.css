@@ -1003,31 +1003,30 @@ button.adicionar-carrinho:hover { background-color: #a30052; }
 /* --- Ajuste Mobile --- */
 @media (max-width: 768px) {
     
-    /* ⬇️ CORREÇÃO DE ESPAÇAMENTO DO RODAPÉ (VERSÃO FINAL) ⬇️ */
-    
     /* 1. Zera o padding vertical do rodapé (mínimo necessário) */
     #rodape-site {
-        padding: 15px 10px; /* Reduz o padding em todos os lados */
-        margin-top: 15px;   /* Reduz a margem do topo */
+        /* Reduz o padding vertical para o mínimo e mantém uma pequena margem superior */
+        padding: 10px 10px !important; /* Espaçamento mínimo */
+        margin-top: 10px !important;   
     }
 
     .footer-container {
         flex-direction: column;
-        gap: 0px !important; /* Força zero espaço entre as colunas */
+        gap: 0px !important; /* Zera o espaço entre as colunas */
     }
     
     .footer-col {
         min-width: 100%;
         padding: 0;
-        /* Zera a margem inferior para que as colunas fiquem coladas */
+        /* Garante que não haja margem entre as colunas */
         margin-bottom: 0px !important; 
     }
     
-    /* 2. Zera as margens verticais internas dos textos */
+    /* 2. Zera as margens verticais internas dos textos e títulos */
     .footer-col h3 {
-        margin-top: 5px !important;    /* Margem mínima no topo do título */
-        margin-bottom: 5px !important; 
-        padding-bottom: 5px; 
+        margin: 5px 0 !important;    /* Margem vertical mínima */
+        padding-bottom: 3px !important; /* Reduz o padding após a linha */
+        line-height: 1.2;
     }
 
     /* ZERA a margem vertical dos parágrafos e itens da lista */
@@ -1042,11 +1041,13 @@ button.adicionar-carrinho:hover { background-color: #a30052; }
     .botoes-contato {
         margin-top: 10px !important; 
         margin-bottom: 10px !important; 
+        gap: 5px; /* Reduz o gap entre os botões */
     }
 
+    /* Copyright */
     .copyright {
         text-align: left;
-        margin-top: 10px !important; /* Zera a distância do copyright */
+        margin-top: 10px !important; 
     }
 }
 
