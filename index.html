@@ -1,5 +1,3 @@
-<!-- ARQUIVO PRINCIPAL -->
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -10,11 +8,10 @@
 </head>
 <body>
 
-<div id="toast">Item adicionado ao carrinho!</div>
+    <div id="toast">Item adicionado ao carrinho!</div>
 
     <header>
         <h1>💎 Seu Catálogo de Brincos</h1>
-        
         <nav class="menu-navegacao">
             <button class="btn-menu ativo" onclick="filtrarColecao('todos')">Ver Tudo</button>
             <button class="btn-menu" onclick="filtrarColecao('verao')">Verão 2024</button>
@@ -22,53 +19,86 @@
         </nav>
     </header>
 
-    <main id="catalogo-principal">
+    <div class="container-principal">
         
-        <div id="cabecalho-todos" class="cabecalho-colecao">
-            <h2>💎 Todos os Brincos</h2>
-        </div>
-
-        <section id="verao" class="colecao">
-            <div class="cabecalho-colecao">
-                <h2>✨ Coleção Verão 2024</h2>
-            </div>
-            </section>
-
-        <section id="classicos" class="colecao">
-            <div class="cabecalho-colecao">
-                <h2>💍 Clássicos e Elegantes</h2>
-            </div>
-            </section>
-
-    </main>
-
-    
-    <aside id="carrinho-lateral">
-        <h2>🛍️ Meu Pedido</h2> 
-        
-        <div class="carrinho-conteudo">
-            <ul id="lista-carrinho">
-                </ul>
-            <div class="total-info">
-                <p>Total de Itens: <span id="total-itens">0</span></p>
-                <p>Valor Estimado: R$ <span id="valor-total">0.00</span></p>
-            </div>
-            <button id="finalizar-compra" onclick="abrirModalCheckout()">Finalizar Pedido</button>
-        </div>
-    </aside>
-
-    <div id="modal-checkout" class="modal">
-        <div class="modal-conteudo">
-            <h3>Preencha seus Dados (Checkout)</h3>
-            <label for="nome-cliente">Nome:</label>
-            <input type="text" id="nome-cliente" required placeholder="Seu Nome Completo">
+        <div class="coluna-conteudo">
             
-            <label for="endereco-cliente">Endereço:</label>
-            <input type="text" id="endereco-cliente" required placeholder="Rua, Número, Bairro, Cidade">
+            <main id="catalogo-principal">
+                <div id="cabecalho-todos" class="cabecalho-colecao">
+                    <h2>💎 Todos os Brincos</h2>
+                </div>
 
-            <label for="whatsapp-cliente">WhatsApp:</label>
-            <input type="tel" id="whatsapp-cliente" required placeholder="Ex: 5521987654321">
+                <section id="verao" class="colecao">
+                    <div class="cabecalho-colecao">
+                        <h2>✨ Coleção Verão 2024</h2>
+                    </div>
+                </section>
 
+                <section id="classicos" class="colecao">
+                    <div class="cabecalho-colecao">
+                        <h2>💍 Clássicos e Elegantes</h2>
+                    </div>
+                </section>
+            </main>
+
+            <footer id="rodape-site">
+                <div class="footer-container">
+                    
+                    <div class="footer-col">
+                        <h3>🎨 Produção Artesanal</h3>
+                        <p>Prazo de produção: <strong>Até 10 dias úteis</strong>.</p>
+                        <p class="aviso-destaque">Planeje seu pedido com antecedência!</p>
+                    </div>
+
+                    <div class="footer-col">
+                        <h3>🚚 Entrega e Pagamento</h3>
+                        <ul>
+                            <li>📦 Uber Flash ou Retirada.</li>
+                            <li>💰 Pix (Acertado no WhatsApp).</li>
+                            <li>Obs: O pagamento não é feito pelo site.</li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-col">
+                        <h3>📱 Fale Conosco</h3>
+                        <div class="botoes-contato">
+                            <a href="#" class="btn-social instagram">📸 Instagram</a>
+                            <a href="#" class="btn-social whatsapp">💬 WhatsApp</a>
+                        </div>
+                        <p class="copyright">© 2024 Sua Loja.</p>
+                    </div>
+
+                </div>
+            </footer>
+
+        </div> <aside id="carrinho-lateral">
+            <h2>🛍️ Meu Pedido</h2> 
+            <div class="carrinho-conteudo">
+                <ul id="lista-carrinho"></ul>
+                <div class="total-info">
+                    <p>Total de Itens: <span id="total-itens">0</span></p>
+                    <p>Valor Estimado: R$ <span id="valor-total">0.00</span></p>
+                </div>
+                <button id="finalizar-compra" onclick="abrirModalCheckout()">Finalizar Pedido</button>
+            </div>
+        </aside>
+
+    </div> <div id="modal-checkout" class="modal">
+        <div class="modal-conteudo">
+            <h3>Preencha seus Dados</h3>
+            <div class="aviso-modal" style="flex-direction: column; align-items: flex-start; gap: 5px;">
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <span>⚠️</span>
+                    <span><strong>Atenção:</strong> Você será direcionado para o WhatsApp para finalizarmos o pedido e acertarmos o frete e pagamento.</span>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center; margin-top: 5px; color: #d63384;">
+                    <span>⏳</span>
+                    <span style="font-size: 0.9em;">Lembrete: Prazo de produção de até 10 dias úteis.</span>
+                </div>
+            </div>
+            <label>Nome:</label> <input type="text" id="nome-cliente" required>
+            <label>Endereço:</label> <input type="text" id="endereco-cliente" required>
+            <label>WhatsApp:</label> <input type="tel" id="whatsapp-cliente" required>
             <button onclick="enviarPedidoWhatsapp()">Confirmar e Enviar</button>
             <button class="fechar-modal" onclick="fecharModalCheckout()">Voltar</button>
         </div>
@@ -80,7 +110,6 @@
     </div>
 
     <script src="produtos.js"></script>
-    
     <script src="script.js"></script>
 </body>
 </html>
