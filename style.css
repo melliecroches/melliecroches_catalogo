@@ -167,10 +167,23 @@ body {
 }
 
 .brinco-card img {
-    width: 100%;
-    height: auto;
+    width: 100%;       /* Ocupa toda a largura do card */
+    height: 250px;     /* FORÇA a altura. Mude para 300px se quiser fotos mais altas */
+    
+    /* A MÁGICA ACONTECE AQUI: */
+    object-fit: cover; /* Corta a imagem para preencher o espaço sem distorcer */
+    object-position: center; /* Centraliza o corte (foca no meio da foto) */
+    
     border-radius: 4px;
     margin-bottom: 10px;
+    background-color: #f4f4f4; /* Cor de fundo cinza enquanto carrega */
+    cursor: zoom-in; /* Lupa */
+    transition: transform 0.2s;
+}
+
+/* Efeito extra: Zoom suave ao passar o mouse */
+.brinco-card img:hover {
+    transform: scale(1.02); /* Cresce levemente */
 }
 
 .card-detalhes h3 {
