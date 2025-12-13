@@ -804,12 +804,29 @@ function abrirProduto(idProduto) {
 
     // 6. Abre a tela
     document.getElementById('tela-produto').classList.remove('escondido');
-    document.body.style.overflow = 'hidden'; 
+    document.body.style.overflow = 'hidden';
+
+    // ⬇️ NOVO: ESCONDE O BOTÃO VOLTAR AO TOPO ⬇️
+    const botaoTopo = document.getElementById("btn-topo");
+    if (botaoTopo) {
+        botaoTopo.classList.remove("mostrar");
+    }
 }
 
 function fecharTelaProduto() {
     document.getElementById('tela-produto').classList.add('escondido');
-    document.body.style.overflow = ''; // Destrava a rolagem
+    document.body.style.overflow = ''; // Reabilita a rolagem
+    
+    // ⬇️ NOVO: FORÇA A VERIFICAÇÃO DO BOTÃO VOLTAR AO TOPO ⬇️
+    // Isto garante que o botão aparecerá se a página estiver longe do topo.
+    const botaoTopo = document.getElementById("btn-topo");
+    if (botaoTopo) {
+        if (window.scrollY > 300) {
+            botaoTopo.classList.add("mostrar");
+        } else {
+            botaoTopo.classList.remove("mostrar");
+        }
+    }
 }
 
 function trocarFotoDetalhe(src) {
