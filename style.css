@@ -97,6 +97,14 @@ header h1 { margin: 0; font-size: 1.5rem; }
     justify-content: center;
 }
 
+.cabecalho-colecao {
+    width: 100%;           /* Ocupa a linha inteira */
+    flex-basis: 100%;      /* Garante que empurre os produtos para baixo */
+    display: flex;         
+    justify-content: center; /* Centraliza o texto na tela */
+    margin-bottom: 10px;
+}
+
 .cabecalho-colecao h2, #cabecalho-todos h2 {
     color: #cc0066;
     font-size: 1.8rem;
