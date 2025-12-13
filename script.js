@@ -155,9 +155,70 @@ function atualizarCarrinhoHTML() {
     valorTotalSpan.textContent = formatarMoeda(totalValor).replace('R$', '').trim();
 }
 
+// =================================================================
+// LÓGICA DE REMOÇÃO COM "DESFAZER" (UNDO)
+// =================================================================
+
+// Variáveis temporárias para guardar o que foi apagado
+let itemRemovidoTemp = null;
+let indiceRemovidoTemp = null;
+let toastTimeout = null; // Para controlar o tempo do aviso
+
 function removerItemCarrinho(index) {
+    // 1. Salva os dados antes de apagar (Backup)
+    itemRemovidoTemp = carrinho[index];
+    indiceRemovidoTemp = index;
+
+    // 2. Remove do array e atualiza a tela
     carrinho.splice(index, 1); 
     atualizarCarrinhoHTML(); 
+
+    // 3. Mostra o aviso com botão de Desfazer
+    mostrarToastDesfazer();
+}
+
+function mostrarToastDesfazer() {
+    const toast = document.getElementById("toast");
+    
+    // Injetamos HTML com o botão dentro da mensagem
+    toast.innerHTML = `
+        Item removido. 
+        <button onclick="desfazerRemocao()">↩ Desfazer</button>
+    `;
+    
+    toast.className = "mostrar";
+
+    // Limpa qualquer timer anterior para não sumir rápido demais se clicar várias vezes
+    if (toastTimeout) clearTimeout(toastTimeout);
+
+    // Esconde depois de 4 segundos
+    toastTimeout = setTimeout(function(){ 
+        toast.className = toast.className.replace("mostrar", ""); 
+    }, 4000);
+}
+
+function desfazerRemocao() {
+    if (itemRemovidoTemp) {
+        // 1. Coloca o item de volta EXATAMENTE onde estava (splice com 0 remove nada e insere)
+        carrinho.splice(indiceRemovidoTemp, 0, itemRemovidoTemp);
+        
+        // 2. Atualiza a tela
+        atualizarCarrinhoHTML();
+
+        // 3. Feedback visual que deu certo
+        const toast = document.getElementById("toast");
+        toast.innerHTML = "✓ Recuperado!"; // Tira o botão e mostra sucesso
+        
+        // Esconde mais rápido (1.5s)
+        if (toastTimeout) clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => {
+            toast.className = toast.className.replace("mostrar", "");
+        }, 1500);
+
+        // 4. Limpa o backup
+        itemRemovidoTemp = null;
+        indiceRemovidoTemp = null;
+    }
 }
 
 // =================================================================
