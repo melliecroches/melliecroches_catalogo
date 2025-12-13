@@ -10,9 +10,18 @@ const NOMES_CATEGORIAS = {
 };
 
 const CORES_COLECAO = {
-    'verao': ['#FFD700', '#FF8C00', '#40E0D0', '#FF69B4'], // Dourado, Laranja, Turquesa, Rosa
-    'classicos': ['#000000', '#C0C0C0', '#F5F5F5'],        // Preto, Prata, Branco Off-white
-    // Adicione outras aqui se criar novas coleções
+    'verao': [
+        { nome: "Dourado Solar", hex: "#FFD700" },
+        { nome: "Laranja Pôr do Sol", hex: "#FF8C00" },
+        { nome: "Turquesa Mar", hex: "#40E0D0" },
+        { nome: "Rosa Hibisco", hex: "#FF69B4" }
+    ],
+    'classicos': [
+        { nome: "Preto Onix", hex: "#000000" },
+        { nome: "Prata Lunar", hex: "#C0C0C0" },
+        { nome: "Off-White", hex: "#F5F5F5" }
+    ],
+    // Se uma categoria não tiver cores definidas aqui, o produto ficará como "Cor Única"
 };
 
 const produtos = [

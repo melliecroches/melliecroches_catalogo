@@ -2,7 +2,7 @@
 // CONFIGURAÇÕES DA LOJA
 // =================================================================
 const CONFIG = {
-    telefone: '5584996140526',    // Seu WhatsApp (somente números)
+    telefone: '5555',    // Seu WhatsApp (somente números)
     nomeLoja: 'Melliê Crochês', // Nome da Loja
     instagram: 'melliecroches'  // Seu usuário do Instagram (sem @)
 };
@@ -24,29 +24,25 @@ let carrinho = JSON.parse(localStorage.getItem('carrinho_compras')) || [];
 function inicializarLoja() {
     if (typeof produtos === 'undefined') return;
 
-    // 1. Descobre quais categorias existem no arquivo de produtos
-    // (O Set remove duplicatas automaticamente)
     const categoriasUnicas = [...new Set(produtos.map(p => p.categoria))];
-
     const menuContainer = document.getElementById('menu-container');
     const mainContainer = document.getElementById('catalogo-principal');
 
     categoriasUnicas.forEach(catId => {
-        // --- A. CRIA O BOTÃO NO MENU ---
-        // Se o botão já não existir (para evitar duplicação)
+        // 1. Cria Botão do Menu (Mantive igual)
         if (!document.querySelector(`button[onclick="filtrarColecao('${catId}')"]`)) {
             const nomeBotao = NOMES_CATEGORIAS[catId] 
-                ? NOMES_CATEGORIAS[catId].replace(/^[^\w\s]+/, '').trim() // Remove emojis pro botão ficar limpo
-                : catId.charAt(0).toUpperCase() + catId.slice(1); // Fallback (Capitaliza)
+                ? NOMES_CATEGORIAS[catId].replace(/^[^\w\s]+/, '').trim()
+                : catId.charAt(0).toUpperCase() + catId.slice(1);
 
             const btn = document.createElement('button');
             btn.className = 'btn-menu';
-            btn.innerText = nomeBotao; // Ex: "Verão 2024"
+            btn.innerText = nomeBotao;
             btn.setAttribute('onclick', `filtrarColecao('${catId}')`);
             menuContainer.appendChild(btn);
         }
 
-        // --- B. CRIA A SEÇÃO NO HTML (ATUALIZADO COM CORES) ---
+        // 2. Cria a Seção no HTML (ATUALIZADO PARA LEGENDA NUMERADA)
         if (!document.getElementById(catId)) {
             const section = document.createElement('section');
             section.id = catId;
@@ -54,26 +50,46 @@ function inicializarLoja() {
 
             const tituloBonito = NOMES_CATEGORIAS[catId] || (catId.charAt(0).toUpperCase() + catId.slice(1));
             
-            // 1. Verifica se essa coleção tem cores definidas
-            let htmlCores = '';
+            // LÓGICA NOVA: Cria a legenda numerada
+            let htmlLegenda = '';
             if (CORES_COLECAO[catId]) {
-                const bolinhas = CORES_COLECAO[catId].map(cor => 
-                    `<span class="cor-bolinha" style="background-color: ${cor};" title="${cor}"></span>`
-                ).join('');
+                const itensLegenda = CORES_COLECAO[catId].map((corObj, index) => {
+                    // Adicionei um 'title' para o nome aparecer se passar o mouse em cima (opcional, mas útil)
+                    return `
+                        <span class="cor-bolinha-numerada" style="background-color: ${corObj.hex};" title="${corObj.nome}">
+                            ${index + 1}
+                        </span>
+                    `;
+                }).join('');
                 
-                htmlCores = `<div class="paleta-colecao">${bolinhas}</div>`;
+                htmlLegenda = `<div class="paleta-colecao">${itensLegenda}</div>`;
             }
 
-            // 2. Injeta o HTML (Título + Cores)
             section.innerHTML = `
                 <div class="cabecalho-colecao">
                     <h2>${tituloBonito}</h2>
-                    ${htmlCores} </div>
+                    ${htmlLegenda} 
+                </div>
             `;
             
             mainContainer.appendChild(section);
         }
     });
+}
+
+// Função que gera as opções do <select> baseada na categoria
+function gerarOpcoesCores(categoria) {
+    const listaCores = CORES_COLECAO[categoria];
+
+    // Se a categoria tiver cores definidas no topo do arquivo
+    if (listaCores && listaCores.length > 0) {
+        return listaCores.map((corObj, index) => 
+            `<option value="${corObj.nome}">${index + 1}. ${corObj.nome}</option>`
+        ).join('');
+    } 
+    
+    // Se não tiver cores definidas (ex: categoria nova), retorna padrão
+    return `<option value="Padrão">Cor Única / Padrão</option>`;
 }
 
 // =================================================================
@@ -82,21 +98,15 @@ function inicializarLoja() {
 // =================================================================
 
 function renderizarCatalogo() {
-    // Verifica se a lista de produtos foi carregada corretamente
-    if (typeof produtos === 'undefined') {
-        console.error("Erro: O arquivo produtos.js não foi carregado!");
-        return;
-    }
+    if (typeof produtos === 'undefined') return;
 
     produtos.forEach(produto => {
-        // Encontra a seção correta (verao, classicos, etc)
         const secaoDestino = document.getElementById(produto.categoria);
         
         if (secaoDestino) {
-            // Cria o HTML das opções de cores
-            let opcoesCores = produto.cores.map(cor => `<option value="${cor}">${cor}</option>`).join('');
+            // AQUI MUDOU: Usa a função automática baseada na CATEGORIA, ignorando o produto.cores
+            const opcoesCoresHTML = gerarOpcoesCores(produto.categoria);
 
-            // Cria o card HTML
             const cardHTML = `
                 <div class="brinco-card">
                     <img src="${produto.imagem}" alt="${produto.nome}" loading="lazy">
@@ -106,13 +116,13 @@ function renderizarCatalogo() {
                         </h3>
                         <p class="preco">${formatarMoeda(produto.preco)}</p>
                         
-                        <label for="cor-${produto.id}">Cor:</label>
+                        <label for="cor-${produto.id}">Escolha a Cor:</label>
                         <select id="cor-${produto.id}">
-                            ${opcoesCores}
+                            ${opcoesCoresHTML}
                         </select>
 
-                        <label for="qtd-${produto.id}">Qtd:</label>
-                        <input type="number" id="qtd-${produto.id}" value="1" min="1" max="100" class="input-quantidade">
+                        <label>Qtd:</label>
+                        <input type="number" class="input-quantidade" value="1" min="1">
 
                         <button class="adicionar-carrinho" data-nome="${produto.nome}" data-preco="${produto.preco}">
                             Adicionar ao Carrinho
@@ -124,7 +134,6 @@ function renderizarCatalogo() {
         }
     });
 }
-
 
 // ----------------------------------------------------
 // FUNÇÃO NOVIDADE: Altera a Quantidade no Carrinho
@@ -731,7 +740,7 @@ function abrirProduto(idProduto) {
 
     // 3. Preenche as Cores (Select)
     const selectCor = document.getElementById('detalhe-cor');
-    selectCor.innerHTML = produto.cores.map(c => `<option value="${c}">${c}</option>`).join('');
+    selectCor.innerHTML = gerarOpcoesCores(produto.categoria);
 
     // 4. Monta a Galeria de Imagens
     const imgPrincipal = document.getElementById('img-principal-detalhe');

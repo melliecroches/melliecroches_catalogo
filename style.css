@@ -139,25 +139,62 @@ header {
     width: auto;        /* Ocupa só o tamanho do texto */
 }
 
-/* O Container das Bolinhas */
+/* ===================================================
+   NOVA LEGENDA DE CORES (COM NÚMEROS)
+   =================================================== */
+
+/* ===================================================
+   NOVA LEGENDA DE CORES (SÓ BOLINHAS NUMERADAS)
+   =================================================== */
+
 .paleta-colecao {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    gap: 10px;          /* Espaço entre as bolinhas */
-    margin-bottom: 15px; /* Espaço até a linha divisória */
+    gap: 10px; /* Espaço entre as bolinhas */
+    margin-bottom: 15px;
+    padding: 0 10px;
 }
 
-/* A Bolinha em si */
-.cor-bolinha {
-    display: block;
-    width: 18px;
-    height: 18px;
+/* Removemos .item-legenda e .nome-cor-legenda pois não existem mais */
+
+.cor-bolinha-numerada {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    width: 30px;  /* Aumentei um pouquinho para o número ficar confortável */
+    height: 30px; 
     border-radius: 50%;
-    border: 2px solid white;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    
+    border: 2px solid white; /* Borda branca para destacar do fundo cinza */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Sombra mais bonita */
+    
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 0 3px rgba(0,0,0,0.3); /* Sombra forte no texto para ler em cores claras */
+    
+    cursor: help; /* Mostra uma ? pequena ao passar o mouse (indicando que tem info/nome no title) */
     transition: transform 0.2s;
 }
-.cor-bolinha:hover { transform: scale(1.2); }
+
+.cor-bolinha-numerada:hover {
+    transform: scale(1.15); /* Aumenta levemente ao passar o mouse */
+}
+
+.nome-cor-legenda {
+    font-size: 0.9rem;
+    color: #555;
+    font-weight: 500;
+}
+
+/* Ajuste Mobile: Se tiver muitas cores, diminui um pouco */
+@media (max-width: 768px) {
+    .paleta-colecao { gap: 10px; }
+    .nome-cor-legenda { font-size: 0.8rem; }
+    .cor-bolinha-numerada { width: 20px; height: 20px; font-size: 0.7rem; }
+}
 
 /* Linha decorativa abaixo do título/bolinhas */
 .cabecalho-colecao::after {
