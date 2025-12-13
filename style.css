@@ -271,6 +271,13 @@ header {
     flex-direction: column;
 }
 
+/* ⬇️ NOVO: Remove os campos de cor e quantidade do card principal ⬇️ */
+.brinco-card select, 
+.brinco-card input.input-quantidade,
+.brinco-card .card-detalhes label { /* Adiciona o label para sumir também */
+    display: none !important; 
+}
+
 .brinco-card img {
     width: 100%;
     height: 250px;
