@@ -1,3 +1,12 @@
+// =================================================================
+// CONFIGURAÇÕES DA LOJA
+// =================================================================
+const CONFIG = {
+    telefone: '5584996140526',    // Seu WhatsApp (somente números)
+    nomeLoja: 'Melliê Crochês', // Nome da Loja
+    instagram: 'melliecroches'  // Seu usuário do Instagram (sem @)
+};
+
 // Função auxiliar para formatar dinheiro (R$) profissionalmente
 function formatarMoeda(valor) {
     return new Intl.NumberFormat('pt-BR', {
@@ -306,23 +315,24 @@ function enviarPedidoWhatsapp() {
         valorTotal += item.precoTotalItem;
     });
     
-    // 4. Cria a mensagem final bonitona
+    // 4. Cria a mensagem final (ATUALIZADO COM O NOME DA LOJA)
     let mensagemCompleta = 
-        `*NOVO PEDIDO - SITE*\n\n` + 
+        `*NOVO PEDIDO - ${CONFIG.nomeLoja.toUpperCase()}*\n\n` +  // Usa o nome da config
         `👤 *Cliente:* ${nome}\n` + 
         `📱 *WhatsApp:* ${telefone}\n\n` + 
         `--------------------------------\n` +
         `*🛒 ITENS DO PEDIDO:*\n` + 
         resumoProdutos + 
-        `\n💰 *TOTAL PRODUTOS: ${formatarMoeda(valorTotal)}*\n` +
+        `\n💰 *TOTAL PRODUTOS: ${formatarMoeda(valorTotal)}*\n` + // Já usando a formatação nova
         `--------------------------------\n\n` +
         `${textoEndereco}\n\n` +
         `_Aguardo confirmação para pagamento._`;
 
-    // 5. Envia
+    // 5. Envia (ATUALIZADO COM O TELEFONE DA CONFIG)
     const mensagemCodificada = encodeURIComponent(mensagemCompleta);
-    const SEU_NUMERO_WHATSAPP = '55555'; // <--- MUDE SEU NÚMERO AQUI
-    const linkWhatsapp = `https://wa.me/${SEU_NUMERO_WHATSAPP}?text=${mensagemCodificada}`;
+    
+    // Aqui usamos o telefone que está lá no topo do arquivo
+    const linkWhatsapp = `https://wa.me/${CONFIG.telefone}?text=${mensagemCodificada}`;
     
     window.open(linkWhatsapp, '_blank');
     fecharModalCheckout();
@@ -518,3 +528,32 @@ window.addEventListener('load', ajustarTopoBody);
 
 // Roda de novo se a pessoa girar a tela ou redimensionar
 window.addEventListener('resize', ajustarTopoBody);
+
+// =================================================================
+// ATUALIZAR RODAPÉ AUTOMATICAMENTE (CONFIG CENTRALIZADA)
+// =================================================================
+function atualizarLinksRodape() {
+    // 1. Atualiza o Link do Instagram
+    const btnInsta = document.getElementById('link-instagram');
+    if (btnInsta) {
+        btnInsta.href = `https://instagram.com/${CONFIG.instagram}`;
+    }
+
+    // 2. Atualiza o Link do WhatsApp do Rodapé
+    const btnWhats = document.getElementById('link-whatsapp-footer');
+    if (btnWhats) {
+        // Cria um link que já abre com um "Oi"
+        btnWhats.href = `https://wa.me/${CONFIG.telefone}?text=Olá! Vim pelo catálogo da ${encodeURIComponent(CONFIG.nomeLoja)}.`;
+    }
+
+    // 3. Atualiza o Copyright com o Ano Atual e Nome da Loja
+    const txtCopy = document.getElementById('texto-copyright');
+    if (txtCopy) {
+        const anoAtual = new Date().getFullYear();
+        txtCopy.innerHTML = `© ${anoAtual} ${CONFIG.nomeLoja}.`;
+    }
+}
+
+// Adicione esta chamada dentro do evento 'DOMContentLoaded' que já existe
+// Ou apenas adicione este ouvinte solto no final do arquivo:
+document.addEventListener('DOMContentLoaded', atualizarLinksRodape);
