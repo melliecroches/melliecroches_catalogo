@@ -648,13 +648,38 @@ button.adicionar-carrinho:hover { background-color: #a30052; }
         padding-bottom: 30px; /* JÁ CORRIGIDO DA ÚLTIMA VEZ */
     }
     
+    /* ===================================================
+    BOTÃO VOLTAR AO TOPO
+    =================================================== */
     #btn-topo {
-        right: auto; /* Tira da direita */
-        left: 20px;  /* Joga para a esquerda */
-        bottom: 20px;
-        width: 45px;
-        height: 45px;
-        font-size: 1.2rem;
+        position: fixed;
+        /* ... (outros estilos fixed) ... */
+        
+        /* ⬇️ NOVO: ESCONDE POR PADRÃO. O JS SÓ ADICIONA A CLASSE .mostrar ⬇️ */
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(20px);
+        transition: all 0.3s ease;
+        
+        /* ADICIONE ISSO para garantir que a seta não tenha display: block/flex em nenhum lugar */
+        display: none; 
+    }
+
+    /* CLASSE QUE MOSTRA (só adicionada pelo JS, se rolou mais de 300px) */
+    #btn-topo.mostrar {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+        /* ⬇️ CORREÇÃO CRÍTICA: REVERTE o display: none do bloco anterior ⬇️ */
+        display: flex; /* Ou 'block' se preferir, mas 'flex' garante a centralização do conteúdo */
+    }
+
+
+    /* ⬇️ CORREÇÃO DEFINITIVA DE SOBREPOSIÇÃO NO MOBILE/DESKTOP ⬇️ */
+    /* Se a tela de produto NÃO estiver escondida, forçamos o botão a sumir. */
+    /* Usamos display: none !important para anular o .mostrar */
+    .tela-produto:not(.escondido) ~ #btn-topo {
+        display: none !important;
     }
 }
 
