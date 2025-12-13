@@ -215,6 +215,30 @@ function atualizarCarrinhoHTML() {
     valorTotalSpan.textContent = formatarMoeda(totalValor).replace('R$', '').trim();
 }
 
+// ----------------------------------------------------
+// FUNÇÃO: Limpar o Carrinho Inteiro
+// ----------------------------------------------------
+function limparCarrinhoCompleto() {
+    // 1. Confirmação (Opcional, mas altamente recomendada para evitar cliques acidentais)
+    const confirmar = confirm("Tem certeza que deseja remover todos os itens do pedido?");
+    
+    if (confirmar) {
+        // 2. Reseta o array do carrinho
+        carrinho = [];
+        
+        // 3. Atualiza o HTML (que também salva o localStorage vazio)
+        atualizarCarrinhoHTML();
+        
+        // 4. Feedback visual
+        mostrarToast("Carrinho limpo! 🗑️");
+        
+        // Garante que a mensagem de "Item removido" (toast de desfazer) suma
+        const toast = document.getElementById("toast");
+        if (toastTimeout) clearTimeout(toastTimeout);
+        toast.className = toast.className.replace("mostrar", "");
+    }
+}
+
 // =================================================================
 // LÓGICA DE REMOÇÃO COM "DESFAZER" (UNDO)
 // =================================================================

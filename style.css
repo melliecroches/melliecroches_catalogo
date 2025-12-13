@@ -450,6 +450,36 @@ button.adicionar-carrinho:hover { background-color: #a30052; }
     background-color: #128c7e;
 }
 
+/* Botão de Limpar (Secundário) */
+#limpar-carrinho {
+    background-color: transparent;
+    color: #cc0066; /* Usa a cor da marca */
+    border: 2px solid #f7a399; /* Borda rosa mais suave */
+    padding: 12px;
+    width: 100%;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 8px; /* Mais próximo do botão principal */
+    transition: all 0.2s;
+}
+
+#limpar-carrinho:hover {
+    background-color: #fce4ec; /* Rosa bem claro ao passar o mouse */
+    border-color: #cc0066;
+}
+
+/* --- Ajuste Mobile --- */
+@media (max-width: 768px) {
+    /* ... (Regras de mobile inalteradas) ... */
+    
+    /* Garante que os dois botões fiquem com a largura total no mobile expandido */
+    #limpar-carrinho, #finalizar-compra {
+        margin-top: 10px;
+    }
+}
+
 /* ===================================================
    RODAPÉ (FOOTER)
    =================================================== */
