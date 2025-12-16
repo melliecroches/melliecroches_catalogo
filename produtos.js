@@ -3,18 +3,24 @@
 
 // Mapa para transformar o ID da categoria em um Nome Bonito na tela
 const NOMES_CATEGORIAS = {
-    'verao': '✨ Coleção Verão 2024',
+    'florescer': 'Coleção Florescer 2024',
     'classicos': '💍 Clássicos e Elegantes',
     'festas': '🥂 Linha Festas & Luxo', // Exemplo futuro
     'prata': '💎 Prata 925'            // Exemplo futuro
 };
 
 const CORES_COLECAO = {
-    'verao': [
-        { nome: "Dourado Solar", hex: "#FFD700" },
-        { nome: "Laranja Pôr do Sol", hex: "#FF8C00" },
-        { nome: "Turquesa Mar", hex: "#40E0D0" },
-        { nome: "Rosa Hibisco", hex: "#FF69B4" }
+    'florescer': [
+        { nome: "Bordô", hex: "#670730" },
+        { nome: "Vermelho", hex: "#bd0508" },
+        { nome: "Terracota", hex: "#9e2519" },
+        { nome: "Castanha", hex: "#be835e" },
+        { nome: "Pêssego", hex: "#fbb4a6" },
+        { nome: "Porcelana", hex: "#e2d7ce" },
+        { nome: "Chiclete", hex: "#efa7cb" },
+        { nome: "Canário", hex: "#fecb00" },
+        { nome: "Azul BIC", hex: "#015eb9" },
+        { nome: "Militar", hex: "#595b3d" }
     ],
     'classicos': [
         { nome: "Preto Onix", hex: "#000000" },
@@ -27,139 +33,139 @@ const CORES_COLECAO = {
 const produtos = [
     {
         id: 1,
-        nome: "Brinco Lua Flor",
-        preco: 45.00, // Preço ajustado para customizado
-        imagem: "imagens/brinco-mar.jpg",
-        categoria: "verao", 
-        // NOVO: Define os campos de cor que o cliente deve escolher
+        nome: "Brinco Flor Encantada",
+        preco: 22.00,
+        imagem: "imagens/florescer/f01_1.jpg",
+        categoria: "florescer", 
         camposCor: [
-            { id: "miolo", label: "Cor do Miolo", paleta: "verao" },
-            { id: "petalas", label: "Cor das Pétalas", paleta: "verao" }
+            { id: "miolo", label: "Cor do Miolo", paleta: "florescer" },
+            { id: "petalas", label: "Cor das Pétalas", paleta: "florescer" }
         ],
-        descricao: "Brinco Flor customizável. Escolha a cor do miolo e das pétalas para criar seu estilo único.",
-        tamanho: "5cm de diâmetro",
-        // ... (fotosExtras)
+        descricao: "Prepare-se para se apaixonar pelo nosso Brinco Flor Encantada! Esta peça exala elegância e fineza. Este brinco deslumbrante e irresistível é a escolha perfeita para adicionar um toque de sofisticação e beleza ao seu visual.",
+        tamanho: "3,5 cm (por ser uma peça artesanal, pode sofrer variações)",
+        fotosExtras: [
+            "imagens/florescer/f01_2.jpg"
+        ]
     },
-    // O Brinco Estrela (ID 2) continua usando o sistema antigo de cor única da coleção:
     {
         id: 2,
-        nome: "Brinco Estrela",
-        preco: 39.90,
-        imagem: "imagens/brinco-sol.jpg",
-        categoria: "verao",
-        // SEM o campo 'camposCor', ele usa o sistema padrão (Cor Única da Coleção)
-        // ...
+        nome: "Brinco Girassol",
+        preco: 10.00,
+        imagem: "imagens/florescer/f02_1.jpg",
+        categoria: "florescer", 
+        descricao: "Deixe a energia radiante dos girassóis iluminarem o seu dia com nosso Brinco Girassol! Seu design vívido e vibrante é perfeito para adicionar um toque de sol e felicidade ao seu visual.",
+        tamanho: "2,4 cm (por ser uma peça artesanal, pode sofrer variações)",
+        fotosExtras: [
+            "imagens/florescer/f02_2.jpg"
+        ]
     },
     {
         id: 3,
-        nome: "Argola Clássica",
-        preco: 55.00,
-        imagem: "imagens/brinco-mar.jpg",
-        categoria: "verao", // Se quiser mudar a seção, mude aqui para "classicos"
-        cores: ["Ouro 18k", "Prata 925"],
-        descricao: "Um brinco leve e radiante, banhado a ouro 18k. Perfeito para iluminar seu look de verão.",
-        tamanho: "4.5cm de altura",
+        nome: "Brinco Pétalas de Cristal",
+        preco: 18.00,
+        imagem: "imagens/florescer/f03_1.jpg",
+        categoria: "florescer", 
+        camposCor: [
+            { id: "petalas", label: "Cor das Pétalas", paleta: "florescer" }
+        ],
+        descricao: "Encante-se com a beleza sutil do nosso Brinco Pétala de Cristal! Suas delicadas pétalas de crochê parecem ser feitas de cristal. É uma escolha perfeita para quem busca um toque de brilho e glamour discreto em qualquer ocasião.",
+        tamanho: "2,6 cm (por ser uma peça artesanal, pode sofrer variações)",
         fotosExtras: [
-            "imagens/estrela_modelo.jpg", // Foto na orelha
-            "imagens/estrela_detalhe.jpg" // Foto de perto
+            "imagens/florescer/f03_2.jpg"
         ]
     },
     {
         id: 4,
-        nome: "Brinco Gota",
-        preco: 42.00,
-        imagem: "imagens/brinco-sol.jpg",
-        categoria: "verao",
-        cores: ["Azul", "Verde", "Vermelho"],
-        descricao: "Um brinco leve e radiante, banhado a ouro 18k. Perfeito para iluminar seu look de verão.",
-        tamanho: "4.5cm de altura",
+        nome: "Brinco Flor Majestosa",
+        preco: 25.00,
+        imagem: "imagens/florescer/f04_1.jpg",
+        categoria: "florescer", 
+        camposCor: [
+            { id: "petalas", label: "Cor das Pétalas", paleta: "florescer" }
+        ],
+        descricao: "Destaque-se com a grandiosidade do Brinco Flor Majestosa! Seu design imponente e refinado o tornam único. Aposte nesta peça para expressar sua confiança e estilo.",
+        tamanho: "4,2 cm (por ser uma peça artesanal, pode sofrer variações)",
         fotosExtras: [
-            "imagens/estrela_modelo.jpg", // Foto na orelha
-            "imagens/estrela_detalhe.jpg" // Foto de perto
+            "imagens/florescer/f04_2.jpg"
         ]
     },
     {
         id: 5,
-        nome: "Brinco Pérola",
-        preco: 60.00,
-        imagem: "imagens/brinco-mar.jpg",
-        categoria: "verao",
-        cores: ["Branca", "Creme"],
-        descricao: "Um brinco leve e radiante, banhado a ouro 18k. Perfeito para iluminar seu look de verão.",
-        tamanho: "4.5cm de altura",
+        nome: "Brinco Flor Delicata",
+        preco: 18.00,
+        imagem: "imagens/florescer/f05_1.jpg",
+        categoria: "florescer", 
+        camposCor: [
+            { id: "petalas", label: "Cor das Pétalas", paleta: "florescer" }
+        ],
+        descricao: "Descubra o charme do nosso Brinco Flor Delicata! Este acessório suave e gracioso adiciona delicadeza a qualquer look. Perfeito para mulheres que valorizam a beleza nos detalhes.",
+        tamanho: "3,5 cm (por ser uma peça artesanal, pode sofrer variações)",
         fotosExtras: [
-            "imagens/estrela_modelo.jpg", // Foto na orelha
-            "imagens/estrela_detalhe.jpg" // Foto de perto
+            "imagens/florescer/f05_2.jpg",
+            "imagens/florescer/f05_3.jpg"
         ]
     },
     {
         id: 6,
-        nome: "Brinco Coração",
-        preco: 25.00,
-        imagem: "imagens/brinco-sol.jpg",
-        categoria: "verao",
-        cores: ["Dourado", "Prateado"],
-        descricao: "Um brinco leve e radiante, banhado a ouro 18k. Perfeito para iluminar seu look de verão.",
-        tamanho: "4.5cm de altura",
-        fotosExtras: [
-            "imagens/estrela_modelo.jpg", // Foto na orelha
-            "imagens/estrela_detalhe.jpg" // Foto de perto
-        ]
+        nome: "Brinco Flor Harmonia",
+        preco: 20.00,
+        imagem: "imagens/florescer/f06.jpg",
+        categoria: "florescer", 
+        camposCor: [
+            { id: "petalas", label: "Cor das Pétalas", paleta: "florescer" }
+        ],
+        descricao: "Deixe sua beleza florescer com o Brinco Flor Harmonia. Com suas pétalas vazadas, este brinco combina leveza e frescor, oferecendo um visual suave e natural que complementa qualquer estilo.",
+        tamanho: "3 cm (por ser uma peça artesanal, pode sofrer variações)"
     },
     {
         id: 7,
-        nome: "Brinco Ouro Puro",
-        preco: 30.00,
-        imagem: "imagens/brinco-sol.jpg",
-        categoria: "classicos",
-        cores: ["Dourado", "Prateado"],
-        descricao: "Um brinco leve e radiante, banhado a ouro 18k. Perfeito para iluminar seu look de verão.",
-        tamanho: "4.5cm de altura",
-        fotosExtras: [
-            "imagens/estrela_modelo.jpg", // Foto na orelha
-            "imagens/estrela_detalhe.jpg" // Foto de perto
-        ]
+        nome: "Brinco Dupla Floral",
+        preco: 10.00,
+        imagem: "imagens/florescer/f07.jpg",
+        categoria: "florescer", 
+        camposCor: [
+            { id: "flor1", label: "Cor da Flor Superior", paleta: "florescer" },
+            { id: "flor2", label: "Cor da Flor Inferior", paleta: "florescer" }
+        ],
+        descricao: "Viva a experiência de um visual inovador com o Brinco Dupla Floral. As flores interligadas criam um visual dinâmico e ousado, perfeito para quem quer ir além do convencional.",
+        tamanho: "5 cm (por ser uma peça artesanal, pode sofrer variações)"
     },
     {
         id: 8,
-        nome: "Brinco Jardim",
-        preco: 45.00,
-        imagem: "imagens/brinco-sol.jpg",
-        categoria: "classicos",
-        cores: ["Dourado", "Prateado"],
-        descricao: "Um brinco leve e radiante, banhado a ouro 18k. Perfeito para iluminar seu look de verão.",
-        tamanho: "4.5cm de altura",
-        fotosExtras: [
-            "imagens/estrela_modelo.jpg", // Foto na orelha
-            "imagens/estrela_detalhe.jpg" // Foto de perto
-        ]
+        nome: "Brinco Flor Lumina",
+        preco: 18.00,
+        imagem: "imagens/florescer/f08.jpg",
+        categoria: "florescer", 
+        camposCor: [
+            { id: "miolo", label: "Cor do Miolo", paleta: "florescer" },
+            { id: "petalas", label: "Cor das Pétalas", paleta: "florescer" }
+        ],
+        descricao: "Experimente a elegância sutil com o Brinco Flor Lumina. Seus contornos delicados e o design inspirado em um esboço artístico trazem um toque de luminosidade e charme. Ideal para iluminar seu look com um toque sofisticado e único.",
+        tamanho: "3,5 cm (por ser uma peça artesanal, pode sofrer variações)"
     },
     {
         id: 9,
-        nome: "Brinco Coral",
-        preco: 90.00,
-        imagem: "imagens/brinco-sol.jpg",
-        categoria: "prata",
-        cores: ["Dourado", "Prateado"],
-        descricao: "Um brinco leve e radiante, banhado a ouro 18k. Perfeito para iluminar seu look de verão.",
-        tamanho: "4.5cm de altura",
-        fotosExtras: [
-            "imagens/estrela_modelo.jpg", // Foto na orelha
-            "imagens/estrela_detalhe.jpg" // Foto de perto
-        ]
+        nome: "Brinco A Rosa",
+        preco: 28.00,
+        imagem: "imagens/florescer/f09.jpg",
+        categoria: "florescer", 
+        camposCor: [
+            { id: "petalas", label: "Cor das Pétalas", paleta: "florescer" }
+        ],
+        descricao: "Adicione um toque de romance ao seu visual com o Brinco A Rosa. Ideal para eventos especiais ou para destacar seu estilo no dia a dia, trazendo charme a qualquer look.",
+        tamanho: "3,5cm (por ser uma peça artesanal, pode sofrer variações)"
     },
     {
         id: 10,
-        nome: "Brinco Barco",
-        preco: 80.00,
-        imagem: "imagens/brinco-sol.jpg",
-        categoria: "festas",
-        cores: ["Dourado", "Prateado"],
-        descricao: "Um brinco leve e radiante, banhado a ouro 18k. Perfeito para iluminar seu look de verão.",
-        tamanho: "4.5cm de altura",
-        fotosExtras: [
-            "imagens/estrela_modelo.jpg", // Foto na orelha
-            "imagens/estrela_detalhe.jpg" // Foto de perto
-        ]
-    }
+        nome: "Brinco O Cravo",
+        preco: 35.00,
+        imagem: "imagens/florescer/f10.jpg",
+        categoria: "florescer", 
+        camposCor: [
+            { id: "petalas", label: "Cor das Pétalas", paleta: "florescer" },
+            { id: "detalhes-borda", label: "Cor dos Detalhes da Borda", paleta: "florescer" }
+        ],
+        descricao: "Destacar-se nunca foi tão fácil com o Brinco O Cravo. Seu design marcante é ideal para quem busca uma combinação de estilo e versatilidade. Seja para um encontro casual ou uma ocasião especial, este brinco adiciona um toque vibrante e moderno ao seu look, fazendo você se sentir confiante e única.",
+        tamanho: "4 cm (por ser uma peça artesanal, pode sofrer variações)"
+    },
 ];
