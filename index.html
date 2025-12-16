@@ -2,163 +2,188 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Melliê Crochês - Catálogo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Melliê Crochês</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com/css2">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <div id="toast">Item adicionado ao carrinho!</div>
+    <div id="overlay-menu" onclick="fecharMenuMobile()"></div>
 
     <header>
-        <div class="header-container">
+        <div class="topo-mobile">
+            <button class="btn-icon-header" onclick="abrirMenuMobile()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+
             <h1 class="logo-site">Melliê Crochês</h1>
-            <div class="busca-wrapper">
-                <input type="text" id="campo-busca" placeholder="🔍 Buscar (ex: Pérola)...">
-            </div>
+            
+            <div style="width: 24px;"></div>
+        </div>
+
+        <div class="container-busca">
+            <input type="text" id="campo-busca" placeholder="Buscar...">
         </div>
     </header>
 
-    <div class="container-geral">
+    <div class="layout-principal">
         
-        <aside class="sidebar">
-            <div class="sidebar-section">
-                <h3 class="sidebar-title">Categorias</h3>
-                <ul id="lista-categorias-sidebar">
-                    </ul>
+        <aside id="sidebar-menu" class="sidebar">
+            <div class="sidebar-header">
+                <h3>Menu</h3>
+                <button class="btn-fechar" onclick="fecharMenuMobile()">×</button>
             </div>
 
-            <div id="sidebar-paleta-container" class="sidebar-section escondido">
-                <h3 class="sidebar-title">🎨 Paleta da Coleção</h3>
-                <div id="sidebar-paleta-cores" class="grid-paleta-sidebar">
-                    </div>
-            </div>
-
-            <div class="sidebar-sobre">
-                <p>Na Melliê Crochês, fios viram joias. Somos uma loja virtual de brincos em crochê, onde cada peça é feita com dedicação e amor em cada ponto. 🪄🌷</p>
-                <div class="box-aviso">
-                    <strong>⚠️ ATENÇÃO:</strong>
-                    <ul>
-                        <li>Este catálogo funciona como um sistema de pedidos. Após enviar, entraremos em contato via WhatsApp.</li>
-                        <li>Todo o processo de pagamento e atualizações é feito por WhatsApp.</li>
-                    </ul>
+            <div class="sidebar-content">
+                <div class="grupo-sidebar">
+                    <h4>Categorias</h4>
+                    <ul id="lista-categorias-sidebar">
+                        </ul>
                 </div>
-            </div>
 
-            <div class="sidebar-footer">
-                <div class="info-loja">
-                    <a href="https://www.google.com/maps/search/?api=1&query=Natal+RN" target="_blank" class="link-contato">📍 Natal/RN</a>
-                    <a href="https://instagram.com/melliecroches" target="_blank" class="link-contato">📷 @melliecroches</a>
-                    <a href="https://wa.me/558499999999" target="_blank" class="link-contato">📞 (84) 9999-9999</a>
-                    <a href="mailto:contato@mellie.com.br" class="link-contato">✉️ contato@mellie.com</a>
+                <div id="sidebar-paleta-container" class="grupo-sidebar escondido">
+                    <h4>Cores da Coleção</h4>
+                    <div id="sidebar-paleta-cores" class="grid-cores-sidebar"></div>
+                </div>
+
+                <div class="grupo-sidebar sobre">
+                    <p>Fios que viram joias. Peças feitas à mão com amor em cada ponto. 🧶✨</p>
+                </div>
+
+                <div class="sidebar-footer">
+                    <a href="#" class="link-contato">📷 @melliecroches</a>
+                    <a href="#" class="link-contato">📍 Natal/RN</a>
                 </div>
             </div>
         </aside>
 
-        <main class="area-produtos">
-            <div id="cabecalho-secao">
-                <h2 id="titulo-categoria-atual">Todas as Peças</h2>
-            </div>
-
-            <div class="toolbar-filtros">
-                <span id="contador-produtos">Carregando...</span>
-                <div class="grupo-ordenacao">
-                    <label for="select-ordenacao">Ordenar por:</label>
+        <main class="conteudo-produtos">
+            
+            <div class="barra-filtros">
+                <span id="contador-produtos" class="contador">Carregando...</span>
+                
+                <div class="ordenacao-wrapper">
                     <select id="select-ordenacao" onchange="aplicarOrdenacao()">
                         <option value="padrao">Lançamentos</option>
                         <option value="menor-preco">Menor Preço</option>
                         <option value="maior-preco">Maior Preço</option>
-                        <option value="az">Nome (A-Z)</option>
-                        <option value="za">Nome (Z-A)</option>
                     </select>
                 </div>
             </div>
 
+            <h2 id="titulo-categoria-atual" class="titulo-secao">Todas as Peças</h2>
+
             <div id="mensagem-sem-resultados" class="escondido">
-                😕 Poxa, não encontramos nenhum item com esse nome.
+                <p>Nenhuma peça encontrada.</p>
             </div>
 
-            <div id="catalogo-principal"></div>
+            <div id="catalogo-principal" class="grade-produtos">
+                </div>
         </main>
     </div>
 
     <div id="btn-carrinho-flutuante" onclick="abrirModalCheckout()">
-        🛒 <span id="contador-carrinho">0</span>
+        <span class="icone-bag">🛍️</span>
+        <span id="contador-carrinho" class="badge">0</span>
     </div>
 
-    <div id="modal-produto" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="fecharModalProduto()">×</span>
-            <div class="modal-body">
-                <div class="modal-img-container">
-                    <img id="modal-img" src="" alt="Produto">
-                    <div id="galeria-miniaturas" class="galeria-miniaturas"></div>
-                </div>
-                <div class="modal-info">
-                    <h2 id="modal-titulo"></h2>
-                    <p id="modal-desc"></p>
-                    <p id="modal-tamanho" class="info-extra"></p>
-                    
-                    <div id="container-opcoes-cores"></div>
+    <div id="toast">Item adicionado!</div>
 
-                    <div class="modal-preco-row">
-                        <span id="modal-preco"></span>
+    <div id="modal-produto" class="modal">
+        <div class="modal-card">
+            <button class="modal-close" onclick="fecharModalProduto()">×</button>
+            
+            <div class="modal-body-produto">
+                <div class="area-foto">
+                    <img id="modal-img" src="" alt="">
+                    <div id="galeria-miniaturas" class="galeria"></div>
+                </div>
+
+                <div class="area-infos">
+                    <h2 id="modal-titulo">Nome do Produto</h2>
+                    <p id="modal-preco" class="preco-destaque">R$ 0,00</p>
+                    
+                    <p id="modal-desc" class="descricao-curta"></p>
+                    <p id="modal-tamanho" class="info-extra"></p>
+
+                    <div id="container-opcoes-cores" class="wrapper-cores"></div>
+
+                    <div class="acoes-compra">
+                        <div class="qtd-wrapper">
+                            <button onclick="mudarQtd(-1)">-</button>
+                            <span id="qtd-selecionada">1</span>
+                            <button onclick="mudarQtd(1)">+</button>
+                        </div>
+                        <button id="btn-add-carrinho" onclick="adicionarAoCarrinho()">
+                            Adicionar à Sacola
+                        </button>
                     </div>
-                    <div class="controles-qtd">
-                        <button onclick="mudarQtd(-1)">-</button>
-                        <span id="qtd-selecionada">1</span>
-                        <button onclick="mudarQtd(1)">+</button>
-                    </div>
-                    <button id="btn-add-carrinho" onclick="adicionarAoCarrinho()">Adicionar ao Carrinho</button>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="modal-checkout" class="modal">
-        <div class="modal-content checkout-content">
-            <span class="close-btn" onclick="fecharModalCheckout()">×</span>
-            <div class="checkout-header">
-                <h2>🛒 Seu Carrinho</h2>
-                <button id="btn-limpar-tudo" onclick="limparCarrinho()" class="btn-texto-vermelho">🗑️ Limpar tudo</button>
+        <div class="modal-card checkout-card">
+            <div class="checkout-top">
+                <h3>Sua Sacola</h3>
+                <button class="modal-close-simples" onclick="fecharModalCheckout()">×</button>
             </div>
-            <div id="lista-itens-carrinho" class="lista-carrinho-scroll"></div>
-            <div class="total-carrinho"><span>Total:</span> <span id="valor-total-carrinho">R$ 0,00</span></div>
-            <hr class="divisor-suave">
-            <div class="form-envio">
-                <h3>Como deseja receber?</h3>
-                <div class="opcoes-entrega-moderna">
-                    <input type="radio" name="entrega" id="tipo-retirada" value="retirada" checked onchange="alternarEntrega()">
-                    <label for="tipo-retirada" class="card-selecao"><span class="icone-entrega">📍</span><span>Retirada</span></label>
-                    <input type="radio" name="entrega" id="tipo-envio" value="envio" onchange="alternarEntrega()">
-                    <label for="tipo-envio" class="card-selecao"><span class="icone-entrega">🚚</span><span>Entrega</span></label>
-                </div>
-                <div id="info-envio" class="escondido animacao-fade">
-                    <div class="input-grupo"><input type="text" id="end-rua" placeholder="Nome da Rua" class="input-moderno"></div>
-                    <div class="input-row">
-                        <input type="text" id="end-numero" placeholder="Número" style="flex: 1;" class="input-moderno">
-                        <input type="text" id="end-bairro" placeholder="Bairro" style="flex: 2;" class="input-moderno">
-                    </div>
-                    <div class="input-grupo"><input type="text" id="end-cidade" placeholder="Cidade" class="input-moderno"></div>
-                    <p class="aviso-frete">ℹ️ O valor do frete será calculado no WhatsApp.</p>
-                </div>
-                <div id="info-retirada" class="animacao-fade">
-                    <div class="box-retirada-moderna">
-                        <p><strong>Ponto de Retirada:</strong></p>
-                        <p>Natal / RN</p>
-                        <p class="subtexto">(Endereço completo enviado no WhatsApp)</p>
-                    </div>
-                </div>
-                <button class="btn-confirmar-pedido" onclick="enviarPedidoWhatsapp()">✅ Finalizar Pedido no WhatsApp</button>
+
+            <div id="lista-itens-carrinho" class="lista-itens"></div>
+
+            <div class="resumo-total">
+                <span>Total:</span>
+                <span id="valor-total-carrinho">R$ 0,00</span>
             </div>
+
+            <button id="btn-limpar-tudo" onclick="limparCarrinho()" class="link-limpar">Esvaziar sacola</button>
+
+            <hr>
+
+            <div class="secao-entrega">
+                <h4>Entrega</h4>
+                <div class="opcoes-toggle">
+                    <label class="toggle-item">
+                        <input type="radio" name="entrega" value="retirada" checked onchange="alternarEntrega()">
+                        <span>📍 Retirada</span>
+                    </label>
+                    <label class="toggle-item">
+                        <input type="radio" name="entrega" value="envio" onchange="alternarEntrega()">
+                        <span>🚚 Envio</span>
+                    </label>
+                </div>
+
+                <div id="info-envio" class="dados-entrega escondido">
+                    <input type="text" id="end-rua" placeholder="Rua">
+                    <div class="row">
+                        <input type="text" id="end-numero" placeholder="Nº" style="width:30%">
+                        <input type="text" id="end-bairro" placeholder="Bairro" style="width:65%">
+                    </div>
+                    <input type="text" id="end-cidade" placeholder="Cidade">
+                    <small>*Frete a combinar no WhatsApp</small>
+                </div>
+
+                <div id="info-retirada" class="dados-entrega">
+                    <div class="box-info">Retirada em Natal/RN</div>
+                </div>
+            </div>
+
+            <button class="btn-whatsapp" onclick="enviarPedidoWhatsapp()">
+                Finalizar no WhatsApp 📲
+            </button>
         </div>
     </div>
 
     <div id="lightbox" class="lightbox" onclick="fecharLightbox(event)">
-        <span class="fechar-btn">×</span>
-        <img class="lightbox-img" id="imagem-destaque" src="" alt="Zoom">
+        <span class="fechar-btn-zoom">×</span>
+        <img class="lightbox-img" id="imagem-destaque" src="">
     </div>
 
     <script src="produtos.js"></script>

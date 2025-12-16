@@ -7,7 +7,7 @@ const CONFIG = {
     instagram: 'melliecroches'
 };
 
-// Variável para guardar o que está sendo exibido no momento (para a ordenação funcionar)
+// Variável global para controle de produtos exibidos
 let produtosAtuais = [];
 
 // =================================================================
@@ -16,37 +16,38 @@ let produtosAtuais = [];
 
 document.addEventListener('DOMContentLoaded', () => {
     // Inicializa com todos os produtos
-    produtosAtuais = [...produtos]; // Cria uma cópia da lista original
+    produtosAtuais = [...produtos]; 
     
     inicializarSidebar();
     renderizarProdutos(produtosAtuais);
     atualizarContadorCarrinho();
 });
 
+// Preenche a barra lateral com as categorias
 function inicializarSidebar() {
     const listaSidebar = document.getElementById('lista-categorias-sidebar');
     if (!listaSidebar) return;
 
     listaSidebar.innerHTML = ''; 
 
-    // 1. Opção "Ver Tudo"
+    // 1. Botão "Ver Tudo"
     const itemTudo = document.createElement('li');
     itemTudo.textContent = 'Ver Tudo';
     itemTudo.classList.add('ativo'); 
     itemTudo.onclick = () => {
         ativarItemSidebar(itemTudo);
         filtrarCategoria('tudo');
+        fecharMenuMobile(); // Fecha o menu ao clicar (no celular)
     };
     listaSidebar.appendChild(itemTudo);
 
-    // 2. Pegar categorias únicas
+    // 2. Categorias Dinâmicas (baseado nos produtos)
     const categoriasUnicas = [...new Set(produtos.map(p => p.categoria))];
 
-    // 3. Criar itens
     categoriasUnicas.forEach(catId => {
         const li = document.createElement('li');
         
-        // Nome bonito (se existir no produtos.js) ou o próprio ID formatado
+        // Tenta pegar nome bonito, senão usa o ID mesmo
         const nomeExibicao = (typeof NOMES_CATEGORIAS !== 'undefined' && NOMES_CATEGORIAS[catId]) 
                              ? NOMES_CATEGORIAS[catId] 
                              : catId.charAt(0).toUpperCase() + catId.slice(1);
@@ -56,12 +57,14 @@ function inicializarSidebar() {
         li.onclick = () => {
             ativarItemSidebar(li);
             filtrarCategoria(catId);
+            fecharMenuMobile(); // Fecha o menu ao clicar
         };
 
         listaSidebar.appendChild(li);
     });
 }
 
+// Muda a cor do item selecionado na sidebar
 function ativarItemSidebar(itemClicado) {
     const todosItens = document.querySelectorAll('#lista-categorias-sidebar li');
     todosItens.forEach(li => li.classList.remove('ativo'));
@@ -69,7 +72,21 @@ function ativarItemSidebar(itemClicado) {
 }
 
 // =================================================================
-// 2. FILTROS, BUSCA E ORDENAÇÃO
+// 2. MENU MOBILE (ABRIR E FECHAR GAVETA)
+// =================================================================
+
+function abrirMenuMobile() {
+    document.getElementById('sidebar-menu').classList.add('aberta');
+    document.getElementById('overlay-menu').classList.add('ativo');
+}
+
+function fecharMenuMobile() {
+    document.getElementById('sidebar-menu').classList.remove('aberta');
+    document.getElementById('overlay-menu').classList.remove('ativo');
+}
+
+// =================================================================
+// 3. LÓGICA DE FILTROS E BUSCA
 // =================================================================
 
 function filtrarCategoria(categoria) {
@@ -78,10 +95,10 @@ function filtrarCategoria(categoria) {
     const containerPaleta = document.getElementById('sidebar-paleta-container');
     const divPaleta = document.getElementById('sidebar-paleta-cores');
     
+    // Reseta campos
     inputBusca.value = '';
     document.getElementById('select-ordenacao').value = 'padrao';
 
-    // 1. Lógica de Filtragem dos Produtos
     if (categoria === 'tudo') {
         titulo.textContent = 'Todas as Peças';
         produtosAtuais = [...produtos];
@@ -92,29 +109,26 @@ function filtrarCategoria(categoria) {
         titulo.textContent = nomeCat;
         produtosAtuais = produtos.filter(p => p.categoria === categoria);
 
-        // 2. Lógica da Paleta na Sidebar (NOVO)
-        // Verifica se existe paleta definida no produtos.js para essa categoria
+        // Mostra a paleta de cores na sidebar se a categoria tiver
         if (typeof CORES_COLECAO !== 'undefined' && CORES_COLECAO[categoria]) {
-            divPaleta.innerHTML = ''; // Limpa anterior
-            
+            divPaleta.innerHTML = ''; 
             CORES_COLECAO[categoria].forEach(cor => {
                 const bolinha = document.createElement('div');
                 bolinha.className = 'bolinha-cor';
                 bolinha.style.backgroundColor = cor.hex;
-                bolinha.title = cor.nome; // Tooltip nativo
+                bolinha.title = cor.nome; 
                 divPaleta.appendChild(bolinha);
             });
-            
-            containerPaleta.classList.remove('escondido'); // Mostra
+            containerPaleta.classList.remove('escondido');
         } else {
-            containerPaleta.classList.add('escondido'); // Esconde se não tiver cores
+            containerPaleta.classList.add('escondido');
         }
     }
 
     renderizarProdutos(produtosAtuais);
 }
 
-// Busca por Texto
+// Busca por texto
 document.getElementById('campo-busca').addEventListener('input', (e) => {
     const termo = e.target.value.toLowerCase();
     const titulo = document.getElementById('titulo-categoria-atual');
@@ -130,29 +144,23 @@ document.getElementById('campo-busca').addEventListener('input', (e) => {
     renderizarProdutos(produtosAtuais);
 });
 
-// NOVA FUNÇÃO: ORDENAÇÃO
+// Ordenação (Menor Preço, Maior Preço)
 function aplicarOrdenacao() {
     const tipo = document.getElementById('select-ordenacao').value;
     
-    // Ordena a lista "produtosAtuais"
     if (tipo === 'menor-preco') {
         produtosAtuais.sort((a, b) => a.preco - b.preco);
     } else if (tipo === 'maior-preco') {
         produtosAtuais.sort((a, b) => b.preco - a.preco);
-    } else if (tipo === 'az') {
-        produtosAtuais.sort((a, b) => a.nome.localeCompare(b.nome));
-    } else if (tipo === 'za') {
-        produtosAtuais.sort((a, b) => b.nome.localeCompare(a.nome));
     } else {
-        // Padrão: volta para a ordem original do array de produtos (geralmente por ID ou data de inserção)
-        // Como 'produtosAtuais' já está filtrado, precisamos re-filtrar da origem para garantir a ordem
-        // (Simplificação: ordenamos por ID se existir, senão mantemos como está)
+        // Ordenação padrão (por ID)
         produtosAtuais.sort((a, b) => a.id - b.id);
     }
 
     renderizarProdutos(produtosAtuais);
 }
 
+// Desenha os cards na tela
 function renderizarProdutos(lista) {
     const container = document.getElementById('catalogo-principal');
     const msgErro = document.getElementById('mensagem-sem-resultados');
@@ -160,9 +168,8 @@ function renderizarProdutos(lista) {
     
     container.innerHTML = '';
 
-    // Atualiza o contador na Toolbar
     if (contador) {
-        contador.textContent = `Mostrando ${lista.length} produto(s)`;
+        contador.textContent = `${lista.length} produtos`;
     }
 
     if (lista.length === 0) {
@@ -175,8 +182,8 @@ function renderizarProdutos(lista) {
     lista.forEach(produto => {
         const card = document.createElement('div');
         card.className = 'product-card';
+        // Clique no card abre modal
         card.onclick = (e) => {
-            // Se clicar no botão "Ver Detalhes", não dispara o click do card duas vezes
             if(e.target.tagName === 'BUTTON') return; 
             abrirModalProduto(produto);
         };
@@ -185,21 +192,21 @@ function renderizarProdutos(lista) {
             <img src="${produto.imagem}" alt="${produto.nome}" loading="lazy">
             <h3>${produto.nome}</h3>
             <span class="price">${formatarMoeda(produto.preco)}</span>
-            <button class="btn-detalhes" onclick="abrirModalProdutoId(${produto.id})">Ver Detalhes</button>
+            <button class="btn-ver-detalhes" onclick="abrirModalProdutoId(${produto.id})">Ver Detalhes</button>
         `;
 
         container.appendChild(card);
     });
 }
 
-// Pequeno helper para o botão chamar a função passando o objeto certo
+// Helper para abrir modal pelo ID
 function abrirModalProdutoId(id) {
     const prod = produtos.find(p => p.id === id);
     if(prod) abrirModalProduto(prod);
 }
 
 // =================================================================
-// 3. CARRINHO E CHECKOUT
+// 4. CARRINHO E CHECKOUT
 // =================================================================
 
 let carrinho = JSON.parse(localStorage.getItem('carrinho_mellie')) || [];
@@ -210,17 +217,16 @@ function adicionarAoCarrinho() {
     let corSelecionada = 'Padrão';
     const selects = document.querySelectorAll('.select-cor-dinamico');
     
-    // VERIFICAÇÃO DE SEGURANÇA (NOVO)
+    // VALIDAÇÃO: Obriga a escolher cor se houver opção
     if (selects.length > 0) {
-        // Verifica se tem algum select que ainda está vazio (valor "")
         for (const select of selects) {
             if (select.value === "") {
-                alert("⚠️ Por favor, escolha a cor antes de adicionar!");
-                select.focus(); // Dá destaque para o campo que falta
-                return; // Para tudo e não adiciona
+                alert("⚠️ Por favor, selecione a cor desejada antes de adicionar.");
+                select.focus(); 
+                return; 
             }
         }
-
+        // Junta as escolhas (ex: "Base: Azul / Flor: Rosa")
         const escolhas = Array.from(selects).map(s => s.options[s.selectedIndex].text);
         corSelecionada = escolhas.join(' / ');
     }
@@ -236,6 +242,7 @@ function adicionarAoCarrinho() {
         qtd: qtd
     };
 
+    // Verifica se já tem esse item igual no carrinho
     const existente = carrinho.find(i => i.id === item.id && i.cor === item.cor);
     if (existente) {
         existente.qtd += qtd;
@@ -244,7 +251,7 @@ function adicionarAoCarrinho() {
     }
 
     salvarCarrinho();
-    mostrarToast("Item adicionado ao carrinho!");
+    mostrarToast("Item adicionado à sacola!");
     fecharModalProduto();
     atualizarContadorCarrinho();
 }
@@ -254,12 +261,11 @@ function atualizarContadorCarrinho() {
     document.getElementById('contador-carrinho').textContent = count;
 }
 
-// --- NOVA FUNÇÃO LIMPAR TUDO ---
 function limparCarrinho() {
-    if (confirm("Tem certeza que deseja esvaziar todo o carrinho?")) {
+    if (confirm("Deseja esvaziar sua sacola de compras?")) {
         carrinho = [];
         salvarCarrinho();
-        abrirModalCheckout(); // Atualiza a tela (vai mostrar vazio)
+        abrirModalCheckout(); 
         atualizarContadorCarrinho();
     }
 }
@@ -268,22 +274,22 @@ function abrirModalCheckout() {
     const modal = document.getElementById('modal-checkout');
     const lista = document.getElementById('lista-itens-carrinho');
     const totalEl = document.getElementById('valor-total-carrinho');
-    const btnLimpar = document.getElementById('btn-limpar-tudo'); // O novo botão
+    const btnLimpar = document.getElementById('btn-limpar-tudo');
     
     lista.innerHTML = '';
     let total = 0;
 
     if (carrinho.length === 0) {
         lista.innerHTML = `
-            <div style="text-align:center; padding: 40px 20px;">
-                <p style="font-size: 3rem;">🛒</p>
-                <p style="color:#888;">Seu carrinho está vazio.</p>
-                <button onclick="fecharModalCheckout()" style="margin-top:15px; background:none; border:1px solid #ddd; padding:8px 15px; border-radius:20px; cursor:pointer;">Voltar para a loja</button>
+            <div style="text-align:center; padding: 30px;">
+                <p style="font-size: 2.5rem;">🛍️</p>
+                <p style="color:#888;">Sua sacola está vazia.</p>
+                <button onclick="fecharModalCheckout()" style="margin-top:15px; background:none; text-decoration:underline; cursor:pointer;">Continuar comprando</button>
             </div>
         `;
-        if(btnLimpar) btnLimpar.style.display = 'none'; // Esconde botão limpar
+        if(btnLimpar) btnLimpar.style.display = 'none'; 
     } else {
-        if(btnLimpar) btnLimpar.style.display = 'block'; // Mostra botão limpar
+        if(btnLimpar) btnLimpar.style.display = 'block'; 
 
         carrinho.forEach((item, index) => {
             const div = document.createElement('div');
@@ -295,7 +301,7 @@ function abrirModalCheckout() {
                 </div>
                 <div style="display:flex; align-items:center;">
                     <span class="item-total">${formatarMoeda(item.preco * item.qtd)}</span>
-                    <button class="btn-remover" onclick="removerDoCarrinho(${index})" title="Remover item">&times;</button>
+                    <button class="btn-remover" onclick="removerDoCarrinho(${index})" style="color:#ff6b6b; border:none; background:none; font-size:1.2rem; margin-left:10px; cursor:pointer;">&times;</button>
                 </div>
             `;
             lista.appendChild(div);
@@ -315,7 +321,7 @@ function removerDoCarrinho(index) {
 }
 
 // =================================================================
-// 4. MODAL DE PRODUTO (VISUAL DELICADO E PALETA ÚNICA)
+// 5. MODAL DE PRODUTO COMPLETO
 // =================================================================
 let produtoAtualModal = null;
 
@@ -325,15 +331,17 @@ function abrirModalProduto(produto) {
     const imgPrincipal = document.getElementById('modal-img');
     const galeriaContainer = document.getElementById('galeria-miniaturas');
     
-    // --- LÓGICA DE IMAGEM E GALERIA (Mantida) ---
+    // 1. Imagem Principal
     imgPrincipal.src = produto.imagem;
     imgPrincipal.onclick = () => abrirLightbox(imgPrincipal.src);
 
+    // 2. Galeria de Miniaturas
     galeriaContainer.innerHTML = ''; 
     let listaImagens = [produto.imagem];
     if (produto.fotosExtras && produto.fotosExtras.length > 0) {
         listaImagens = listaImagens.concat(produto.fotosExtras);
     }
+    // Remove duplicatas
     listaImagens = [...new Set(listaImagens)];
 
     if (listaImagens.length > 1) { 
@@ -341,52 +349,46 @@ function abrirModalProduto(produto) {
             const thumb = document.createElement('img');
             thumb.src = fotoSrc;
             if (fotoSrc === imgPrincipal.src) thumb.classList.add('ativa');
+            
             thumb.onclick = () => {
                 imgPrincipal.src = fotoSrc;
                 imgPrincipal.onclick = () => abrirLightbox(fotoSrc); 
-                document.querySelectorAll('.galeria-miniaturas img').forEach(img => img.classList.remove('ativa'));
+                
+                // Atualiza borda ativa
+                document.querySelectorAll('.galeria img').forEach(img => img.classList.remove('ativa'));
                 thumb.classList.add('ativa');
             };
             galeriaContainer.appendChild(thumb);
         });
     }
 
-    // --- TEXTOS (Mantidos) ---
+    // 3. Informações
     document.getElementById('modal-titulo').textContent = produto.nome;
-    document.getElementById('modal-desc').textContent = produto.descricao || "Peça artesanal feita com carinho.";
+    document.getElementById('modal-desc').textContent = produto.descricao || "Peça artesanal exclusiva.";
     document.getElementById('modal-preco').textContent = formatarMoeda(produto.preco);
-    document.getElementById('modal-tamanho').textContent = produto.tamanho ? `Tamanho: ${produto.tamanho}` : '';
+    document.getElementById('modal-tamanho').textContent = produto.tamanho ? `Tamanho aprox: ${produto.tamanho}` : '';
     document.getElementById('qtd-selecionada').textContent = '1';
 
-    // --- ÁREA DE CORES (LÓGICA NOVA!) ---
+    // 4. Cores e Paleta
     const containerCores = document.getElementById('container-opcoes-cores');
-    containerCores.innerHTML = ''; // Limpa tudo
+    containerCores.innerHTML = '';
 
     if (produto.camposCor && produto.camposCor.length > 0) {
         
-        // PASSO 1: Coletar TODAS as cores únicas disponíveis para este produto
-        let coresUnicasDoProduto = new Map(); // Usamos Map para evitar duplicatas pelo nome da cor
-
+        // Coleta cores únicas para o preview
+        let coresUnicasDoProduto = new Map();
         produto.camposCor.forEach(campo => {
             const coresDaPaleta = (typeof CORES_COLECAO !== 'undefined' && CORES_COLECAO[campo.paleta]) 
                                   ? CORES_COLECAO[campo.paleta] : [];
-            
             coresDaPaleta.forEach(cor => {
-                // Adiciona no mapa se ainda não existir (chave é o nome da cor)
-                if (!coresUnicasDoProduto.has(cor.nome)) {
-                    coresUnicasDoProduto.set(cor.nome, cor);
-                }
+                if (!coresUnicasDoProduto.has(cor.nome)) coresUnicasDoProduto.set(cor.nome, cor);
             });
         });
 
-        // PASSO 2: Renderizar a paleta visual ÚNICA no topo
+        // Exibe Paleta Visual (Bolinhas)
         if (coresUnicasDoProduto.size > 0) {
             const divPreview = document.createElement('div');
             divPreview.className = 'preview-cores-modal';
-            
-            // Opcional: Um títulozinho discreto
-            // divPreview.innerHTML = '<span class="titulo-paleta-modal">Cores disponíveis:</span>';
-
             coresUnicasDoProduto.forEach((cor) => {
                  const bolinha = document.createElement('div');
                  bolinha.className = 'bolinha-cor';
@@ -397,7 +399,7 @@ function abrirModalProduto(produto) {
             containerCores.appendChild(divPreview);
         }
 
-        // PASSO 3: Renderizar os SELECTS abaixo da paleta
+        // Cria Selects
         produto.camposCor.forEach(campo => {
             const wrapper = document.createElement('div');
             wrapper.className = 'grupo-select';
@@ -410,10 +412,9 @@ function abrirModalProduto(produto) {
                 optionsHTML += `<option value="${cor.nome}">${cor.nome}</option>`;
             });
 
-            // Apenas label e select, sem bolinhas aqui
             wrapper.innerHTML = `
                 <label>${campo.label}:</label>
-                <select class="select-cor-dinamico" style="cursor:pointer;">
+                <select class="select-cor-dinamico">
                     ${optionsHTML}
                 </select>
             `;
@@ -424,8 +425,16 @@ function abrirModalProduto(produto) {
     modal.style.display = 'flex';
 }
 
+function mudarQtd(delta) {
+    const span = document.getElementById('qtd-selecionada');
+    let atual = parseInt(span.textContent);
+    atual += delta;
+    if (atual < 1) atual = 1;
+    span.textContent = atual;
+}
+
 // =================================================================
-// 5. UTILITÁRIOS E WHATSAPP
+// 6. UTILITÁRIOS (WhatsApp, Toast, Lightbox)
 // =================================================================
 
 function alternarEntrega() {
@@ -443,30 +452,31 @@ function alternarEntrega() {
 }
 
 function enviarPedidoWhatsapp() {
-    if (carrinho.length === 0) return alert("Seu carrinho está vazio!");
+    if (carrinho.length === 0) return alert("Sua sacola está vazia!");
 
     let mensagem = `Olá! Gostaria de fazer um pedido na ${CONFIG.nomeLoja}:\n\n`;
     
     let total = 0;
     carrinho.forEach(item => {
         const subtotal = item.preco * item.qtd;
-        mensagem += `▪ ${item.qtd}x ${item.nome}\n   Detalhes: ${item.cor}\n   Valor: ${formatarMoeda(subtotal)}\n`;
+        mensagem += `▪ ${item.qtd}x ${item.nome}\n   Cor: ${item.cor}\n   Valor: ${formatarMoeda(subtotal)}\n`;
         total += subtotal;
     });
 
-    mensagem += `\n*TOTAL PRODUTOS: ${formatarMoeda(total)}*\n`;
+    mensagem += `\n*TOTAL: ${formatarMoeda(total)}*\n`;
 
     const tipoEntrega = document.querySelector('input[name="entrega"]:checked').value;
     if (tipoEntrega === 'retirada') {
-        mensagem += `\n📦 Forma de Entrega: RETIRADA`;
+        mensagem += `\n📦 Entrega: RETIRADA EM MÃOS`;
     } else {
         const rua = document.getElementById('end-rua').value;
         const bairro = document.getElementById('end-bairro').value;
+        const cidade = document.getElementById('end-cidade').value;
+
         if (!rua || !bairro) return alert("Por favor, preencha o endereço de entrega.");
         
-        mensagem += `\n📦 Forma de Entrega: ENVIO`;
-        mensagem += `\n📍 Endereço: ${rua}, ${document.getElementById('end-numero').value} - ${bairro}`;
-        mensagem += `\n🏙 Cidade: ${document.getElementById('end-cidade').value}`;
+        mensagem += `\n📦 Entrega: ENVIO`;
+        mensagem += `\n📍 Endereço: ${rua}, ${document.getElementById('end-numero').value} - ${bairro}, ${cidade}`;
     }
 
     const link = `https://wa.me/${CONFIG.telefone}?text=${encodeURIComponent(mensagem)}`;
@@ -485,6 +495,7 @@ function mostrarToast(msg) {
     const toast = document.getElementById('toast');
     toast.textContent = msg;
     toast.className = 'mostrar';
+    // Remove a classe após 3s para sumir
     setTimeout(() => { toast.className = toast.className.replace('mostrar', ''); }, 3000);
 }
 
