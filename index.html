@@ -3,232 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo Virtual de Brincos</title>
+    <title>Melliê Crochês - Catálogo</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com/css2">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
     <div id="toast">Item adicionado ao carrinho!</div>
 
     <header>
-        <h1>💎 Seu Catálogo de Brincos</h1>
-        
-        <nav id="menu-container" class="menu-navegacao">
-            <button class="btn-menu ativo" onclick="filtrarColecao('todos')">Ver Tudo</button>
-        </nav>
-
-        <input type="text" id="campo-busca" class="barra-busca" placeholder="🔍 Buscar por nome (ex: Pérola)...">
+        <div class="header-container">
+            <h1 class="logo-site">Melliê Crochês</h1>
+            
+            <div class="busca-wrapper">
+                <input type="text" id="campo-busca" placeholder="🔍 Buscar (ex: Pérola)...">
+            </div>
+        </div>
     </header>
 
-    <div class="container-principal">
+    <div class="container-geral">
         
-        <div class="coluna-conteudo">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3>Categorias</h3>
+            </div>
             
-            <main id="catalogo-principal">
-                <div id="mensagem-sem-resultados" class="escondido" style="text-align: center; width: 100%; padding: 20px; color: #666;">
-                    😕 Poxa, não encontramos nenhum brinco com esse nome.
+            <ul id="lista-categorias-sidebar">
+                </ul>
+
+            <div class="sidebar-footer">
+                <div class="info-loja">
+                    <p>📍 Natal/RN</p>
+                    <p>📷 @melliecroches</p>
+                    <p>📞 (84) 9999-9999</p>
                 </div>
-
-                <div id="cabecalho-todos" class="cabecalho-colecao">
-                    <h2>💎 Todos os Brincos</h2>
-                </div>
-            </main>
-
-            <footer id="rodape-site">
-                <div class="footer-desktop">
-                    
-                    <div class="footer-col">
-                        <h3>🧶 Produção Artesanal</h3>
-                        <p>Prazo de produção: <strong>Até 10 dias úteis</strong>.</p>
-                        <p class="aviso-destaque">Planeje seu pedido com antecedência!</p>
-                    </div>
-
-                    <div class="footer-col">
-                        <h3>🚚 Entrega e Pagamento</h3>
-                        <ul>
-                            <li>📦 Uber Flash ou Retirada.</li>
-                            <li>💰 Pix (Acertado no WhatsApp).</li>
-                            <li>⚠️ Obs: O pagamento <strong>não</strong> é feito pelo site.</li>
-                        </ul>
-                    </div>
-
-                    <div class="footer-col">
-                        <h3>📱 Fale Conosco</h3>
-                        <div class="botoes-contato">
-                            <a id="link-instagram" href="#" target="_blank" class="btn-social instagram">
-                                📸 Siga no Instagram
-                            </a>
-                            
-                            <a id="link-whatsapp-footer" href="#" target="_blank" class="btn-social whatsapp">
-                                💬 Chamar no WhatsApp
-                            </a>
-                        </div>
-
-                        <p id="texto-copyright" class="copyright">© 2025 Carregando...</p>
-                    </div>
-
-                </div>
-
-                <div class="footer-mobile">
-                    <details>
-                        <summary>🧶 Produção Artesanal</summary>
-                        <p>Prazo de produção: <strong>até 10 dias úteis</strong>.</p>
-                        <p>Planeje seu pedido com antecedência.</p>
-                    </details>
-
-                    <details>
-                        <summary>🚚 Entrega e Pagamento</summary>
-                        <ul>
-                            <li>📦 Uber Flash ou retirada</li>
-                            <li>💰 Pix (acertado no WhatsApp)</li>
-                            <li>⚠️ Pagamento não é feito pelo site</li>
-                        </ul>
-                    </details>
-
-                    <details open class="contato-fixo">
-                        <summary>📱 Fale Conosco</summary>
-                        <div class="botoes-contato">
-                            <a id="link-instagram-mobile" href="#" target="_blank" class="btn-social instagram">
-                                📸 Siga no Instagram
-                            </a>
-                            
-                            <a id="link-whatsapp-footer-mobile" href="#" target="_blank" class="btn-social whatsapp">
-                                💬 Chamar no WhatsApp
-                            </a>
-                        </div>
-                    </details>
-                </div>
-            </footer>
-
-        </div> <aside id="carrinho-lateral">
-            <h2>🛍️ Meu Pedido</h2> 
-            <div class="carrinho-conteudo">
-                <ul id="lista-carrinho"></ul>
-                <div class="total-info">
-                    <p>Total de Itens: <span id="total-itens">0</span></p>
-                    <p>Valor Estimado: R$ <span id="valor-total">0.00</span></p>
-                </div>
-                <button id="finalizar-compra" onclick="abrirModalCheckout()">Finalizar Pedido</button>
-                <button id="limpar-carrinho" onclick="limparCarrinhoCompleto()">Limpar Pedido</button>
             </div>
         </aside>
 
-    </div>
-    
-    <div id="tela-produto" class="tela-produto escondido">
-    
-        <div class="cabecalho-detalhes">
-            <button onclick="fecharTelaProduto()" class="btn-voltar">
-                ← Voltar para a Loja
-            </button>
-        </div>
-
-        <div class="produto-container">
-            <div class="produto-galeria">
-                <img id="img-principal-detalhe" src="" alt="Imagem Principal">
-                <div id="lista-miniaturas" class="miniaturas">
-                    </div>
+        <main class="area-produtos">
+            
+            <div id="mensagem-sem-resultados" class="escondido">
+                😕 Poxa, não encontramos nenhum item com esse nome.
             </div>
 
-            <div class="produto-infos">
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                    <span id="detalhe-categoria" class="tag-categoria">Coleção Verão</span> 
-                    
-                    <div id="detalhe-paleta" class="paleta-colecao" style="margin: 0; padding: 0; gap: 5px;"></div>
-                </div>
-                <h2 id="detalhe-nome">Nome do Brinco</h2>
-                <p id="detalhe-preco" class="preco-grande">R$ 00,00</p>
-                
-                <div class="separador"></div>
+            <div id="cabecalho-secao">
+                <h2 id="titulo-categoria-atual">Todas as Peças</h2>
+            </div>
 
-                <p id="detalhe-descricao" class="texto-descricao">Descrição do produto...</p>
-                
-                <div class="info-extra">
-                    <strong>📏 Tamanho:</strong> <span id="detalhe-tamanho">-</span>
+            <div id="catalogo-principal">
                 </div>
 
-                <div class="area-compra-detalhe">
-                    <div style="margin-bottom: 15px;">
-                        <label for="detalhe-cor">Escolha a Cor:</label>
-                        <select id="detalhe-cor" style="width: 100%;"></select>
-                    </div>
+        </main>
+    </div>
+
+    <div id="btn-carrinho-flutuante" onclick="abrirModalCheckout()">
+        🛒 <span id="contador-carrinho">0</span>
+    </div>
+
+    <div id="modal-produto" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="fecharModalProduto()">&times;</span>
+            
+            <div class="modal-body">
+                <div class="modal-img-container">
+                    <img id="modal-img" src="" alt="Produto">
+                </div>
+                
+                <div class="modal-info">
+                    <h2 id="modal-titulo">Nome do Produto</h2>
+                    <p id="modal-desc">Descrição do produto...</p>
+                    <p id="modal-tamanho" class="info-extra"></p>
                     
-                    <div style="margin-bottom: 15px;">
-                        <label for="detalhe-qtd">Quantidade:</label>
-                        <input type="number" id="detalhe-qtd" value="1" min="1" class="input-quantidade" style="width: 100%;">
+                    <div id="container-opcoes-cores"></div>
+
+                    <div class="modal-preco-row">
+                        <span id="modal-preco">R$ 0,00</span>
                     </div>
 
-                    <button id="btn-add-detalhe" class="btn-comprar-grande">
-                        Adicionar ao Carrinho
-                    </button>
+                    <div class="controles-qtd">
+                        <button onclick="mudarQtd(-1)">-</button>
+                        <span id="qtd-selecionada">1</span>
+                        <button onclick="mudarQtd(1)">+</button>
+                    </div>
+
+                    <button id="btn-add-carrinho" onclick="adicionarAoCarrinho()">Adicionar ao Carrinho</button>
                 </div>
             </div>
         </div>
     </div>
-    
+
     <div id="modal-checkout" class="modal">
-        <div class="modal-conteudo">
-            <h3>Finalizar Pedido</h3>
+        <div class="modal-content checkout-content">
+            <span class="close-btn" onclick="fecharModalCheckout()">&times;</span>
+            <h2>🛒 Seu Carrinho</h2>
+            
+            <div id="lista-itens-carrinho">
+                </div>
 
-            <div class="aviso-modal" style="flex-direction: column; align-items: flex-start; gap: 5px;">
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    <span>⚠️</span>
-                    <span><strong>Atenção:</strong> Você será direcionado para o WhatsApp para finalizarmos o pedido e acertarmos o pagamento.</span>
-                </div>
-                <div style="display: flex; gap: 10px; align-items: center; margin-top: 5px; color: #d63384;">
-                    <span>⏳</span>
-                    <span style="font-size: 0.9em;">Lembrete: Prazo de produção de até 10 dias úteis.</span>
-                </div>
+            <div class="total-carrinho">
+                Total: <span id="valor-total-carrinho">R$ 0,00</span>
             </div>
 
-            <label>Seus Dados:</label>
-            <input type="text" id="nome-cliente" placeholder="Seu Nome Completo" required>
-            <input type="tel" id="whatsapp-cliente" placeholder="Seu WhatsApp (com DDD)" required>
+            <hr>
 
-            <label style="margin-top: 15px;">Como deseja receber?</label>
-            <div class="opcoes-entrega">
-                <label class="radio-custom">
-                    <input type="radio" name="tipo_entrega" value="uber" checked onchange="alternarEntrega()">
-                    🚗 Entrega (Uber Flash)
-                </label>
-                <label class="radio-custom">
-                    <input type="radio" name="tipo_entrega" value="retirada" onchange="alternarEntrega()">
-                    🛍️ Retirada no Local
-                </label>
-            </div>
-
-            <div id="campos-endereco-uber">
-                <label>Endereço de Entrega:</label>
-                <input type="text" id="end-rua" placeholder="Nome da Rua" style="margin-bottom: 8px;">
-                
-                <div style="display: flex; gap: 10px;">
-                    <input type="text" id="end-numero" placeholder="Número" style="width: 30%;">
-                    <input type="text" id="end-bairro" placeholder="Bairro" style="width: 70%;">
+            <div class="form-envio">
+                <h3>Forma de Entrega</h3>
+                <div class="opcoes-entrega">
+                    <label class="radio-custom">
+                        <input type="radio" name="entrega" value="retirada" checked onchange="alternarEntrega()"> 
+                        Retirada
+                    </label>
+                    <label class="radio-custom">
+                        <input type="radio" name="entrega" value="envio" onchange="alternarEntrega()"> 
+                        Entrega
+                    </label>
                 </div>
-                
-                <input type="text" id="end-cidade" placeholder="Cidade" style="margin-top: 8px;">
-                <p style="font-size: 0.8rem; color: #666; margin-top: 5px;">*O valor do frete será calculado e informado no WhatsApp.</p>
-            </div>
 
-            <div id="info-retirada" class="escondido">
-                <div class="box-retirada">
-                    <p><strong>📍 Local de Retirada:</strong></p>
-                    <p>Rua Exemplo da Sua Loja, 123<br>Bairro Centro - Sua Cidade</p>
-                    <p><em>(Horário a combinar após a confirmação)</em></p>
+                <div id="info-envio" class="escondido">
+                    <input type="text" id="end-rua" placeholder="Rua">
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="end-numero" placeholder="Número" style="width: 30%;">
+                        <input type="text" id="end-bairro" placeholder="Bairro" style="width: 70%;">
+                    </div>
+                    <input type="text" id="end-cidade" placeholder="Cidade" style="margin-top: 8px;">
+                    <p class="aviso-frete">*O valor do frete será calculado no WhatsApp.</p>
                 </div>
-            </div>
 
-            <button onclick="enviarPedidoWhatsapp()">Confirmar e Enviar Pedido</button>
-            <button class="fechar-modal" onclick="fecharModalCheckout()">Voltar</button>
+                <div id="info-retirada">
+                    <div class="box-retirada">
+                        <p><strong>📍 Local de Retirada:</strong></p>
+                        <p>Natal / RN</p>
+                        <p><em>(Endereço completo enviado no WhatsApp)</em></p>
+                    </div>
+                </div>
+
+                <button class="btn-confirmar-pedido" onclick="enviarPedidoWhatsapp()">Confirmar Pedido no WhatsApp</button>
+            </div>
         </div>
     </div>
-    
+
     <div id="lightbox" class="lightbox" onclick="fecharLightbox(event)">
         <span class="fechar-btn">&times;</span>
-        <img class="lightbox-img" id="imagem-destaque" src="" alt="Imagem Ampliada">
+        <img class="lightbox-img" id="imagem-destaque" src="" alt="Zoom">
     </div>
-
-    <button id="btn-topo" onclick="voltarAoTopo()" aria-label="Voltar ao topo">↑</button>
 
     <script src="produtos.js"></script>
     <script src="script.js"></script>
