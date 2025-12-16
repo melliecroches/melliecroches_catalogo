@@ -7,14 +7,19 @@ const CONFIG = {
     instagram: 'melliecroches'
 };
 
+// Variável para guardar o que está sendo exibido no momento (para a ordenação funcionar)
+let produtosAtuais = [];
+
 // =================================================================
-// 1. INICIALIZAÇÃO E SIDEBAR
+// 1. INICIALIZAÇÃO
 // =================================================================
 
-// Assim que a página carrega, fazemos isso:
 document.addEventListener('DOMContentLoaded', () => {
+    // Inicializa com todos os produtos
+    produtosAtuais = [...produtos]; // Cria uma cópia da lista original
+    
     inicializarSidebar();
-    renderizarProdutos(produtos); // Mostra tudo inicialmente
+    renderizarProdutos(produtosAtuais);
     atualizarContadorCarrinho();
 });
 
@@ -22,26 +27,26 @@ function inicializarSidebar() {
     const listaSidebar = document.getElementById('lista-categorias-sidebar');
     if (!listaSidebar) return;
 
-    listaSidebar.innerHTML = ''; // Limpa antes de criar
+    listaSidebar.innerHTML = ''; 
 
-    // 1. Criar opção "Tudo" (Padrão)
+    // 1. Opção "Ver Tudo"
     const itemTudo = document.createElement('li');
     itemTudo.textContent = 'Ver Tudo';
-    itemTudo.classList.add('ativo'); // Começa marcado
+    itemTudo.classList.add('ativo'); 
     itemTudo.onclick = () => {
         ativarItemSidebar(itemTudo);
         filtrarCategoria('tudo');
     };
     listaSidebar.appendChild(itemTudo);
 
-    // 2. Pegar categorias únicas dos produtos
+    // 2. Pegar categorias únicas
     const categoriasUnicas = [...new Set(produtos.map(p => p.categoria))];
 
-    // 3. Criar os itens da lista
+    // 3. Criar itens
     categoriasUnicas.forEach(catId => {
         const li = document.createElement('li');
         
-        // Tenta usar o nome bonito do produtos.js, se não tiver, usa o ID mesmo
+        // Nome bonito (se existir no produtos.js) ou o próprio ID formatado
         const nomeExibicao = (typeof NOMES_CATEGORIAS !== 'undefined' && NOMES_CATEGORIAS[catId]) 
                              ? NOMES_CATEGORIAS[catId] 
                              : catId.charAt(0).toUpperCase() + catId.slice(1);
@@ -57,7 +62,6 @@ function inicializarSidebar() {
     });
 }
 
-// Função visual para trocar o "Check" (✓) e a cor rosa
 function ativarItemSidebar(itemClicado) {
     const todosItens = document.querySelectorAll('#lista-categorias-sidebar li');
     todosItens.forEach(li => li.classList.remove('ativo'));
@@ -65,79 +69,117 @@ function ativarItemSidebar(itemClicado) {
 }
 
 // =================================================================
-// 2. LÓGICA DE EXIBIÇÃO E FILTRO
+// 2. FILTROS, BUSCA E ORDENAÇÃO
 // =================================================================
 
 function filtrarCategoria(categoria) {
     const titulo = document.getElementById('titulo-categoria-atual');
     const inputBusca = document.getElementById('campo-busca');
     
-    // Limpa a busca quando troca de categoria para não confundir
+    // Reseta a busca e o select de ordenação
     inputBusca.value = '';
+    document.getElementById('select-ordenacao').value = 'padrao';
 
     if (categoria === 'tudo') {
         titulo.textContent = 'Todas as Peças';
-        renderizarProdutos(produtos);
+        produtosAtuais = [...produtos];
     } else {
-        // Atualiza o título
         const nomeCat = (typeof NOMES_CATEGORIAS !== 'undefined' && NOMES_CATEGORIAS[categoria]) 
                         ? NOMES_CATEGORIAS[categoria] : categoria;
         titulo.textContent = nomeCat;
 
-        // Filtra
-        const filtrados = produtos.filter(p => p.categoria === categoria);
-        renderizarProdutos(filtrados);
+        produtosAtuais = produtos.filter(p => p.categoria === categoria);
     }
+
+    renderizarProdutos(produtosAtuais);
 }
 
-// Busca por texto (Funciona junto com o layout novo)
+// Busca por Texto
 document.getElementById('campo-busca').addEventListener('input', (e) => {
     const termo = e.target.value.toLowerCase();
     const titulo = document.getElementById('titulo-categoria-atual');
     
     if (termo === '') {
         titulo.textContent = 'Todas as Peças';
-        renderizarProdutos(produtos);
-        return;
+        produtosAtuais = [...produtos];
+    } else {
+        titulo.textContent = `Buscando por: "${termo}"`;
+        produtosAtuais = produtos.filter(p => p.nome.toLowerCase().includes(termo));
     }
-
-    titulo.textContent = `Buscando por: "${termo}"`;
-    const filtrados = produtos.filter(p => p.nome.toLowerCase().includes(termo));
-    renderizarProdutos(filtrados);
+    
+    renderizarProdutos(produtosAtuais);
 });
 
-function renderizarProdutos(listaProdutos) {
+// NOVA FUNÇÃO: ORDENAÇÃO
+function aplicarOrdenacao() {
+    const tipo = document.getElementById('select-ordenacao').value;
+    
+    // Ordena a lista "produtosAtuais"
+    if (tipo === 'menor-preco') {
+        produtosAtuais.sort((a, b) => a.preco - b.preco);
+    } else if (tipo === 'maior-preco') {
+        produtosAtuais.sort((a, b) => b.preco - a.preco);
+    } else if (tipo === 'az') {
+        produtosAtuais.sort((a, b) => a.nome.localeCompare(b.nome));
+    } else if (tipo === 'za') {
+        produtosAtuais.sort((a, b) => b.nome.localeCompare(a.nome));
+    } else {
+        // Padrão: volta para a ordem original do array de produtos (geralmente por ID ou data de inserção)
+        // Como 'produtosAtuais' já está filtrado, precisamos re-filtrar da origem para garantir a ordem
+        // (Simplificação: ordenamos por ID se existir, senão mantemos como está)
+        produtosAtuais.sort((a, b) => a.id - b.id);
+    }
+
+    renderizarProdutos(produtosAtuais);
+}
+
+function renderizarProdutos(lista) {
     const container = document.getElementById('catalogo-principal');
     const msgErro = document.getElementById('mensagem-sem-resultados');
+    const contador = document.getElementById('contador-produtos');
     
     container.innerHTML = '';
 
-    if (listaProdutos.length === 0) {
+    // Atualiza o contador na Toolbar
+    if (contador) {
+        contador.textContent = `Mostrando ${lista.length} produto(s)`;
+    }
+
+    if (lista.length === 0) {
         msgErro.classList.remove('escondido');
         return;
     } else {
         msgErro.classList.add('escondido');
     }
 
-    listaProdutos.forEach(produto => {
+    lista.forEach(produto => {
         const card = document.createElement('div');
         card.className = 'product-card';
-        // Ao clicar no card, abre o modal (exceto se clicar no botão)
-        card.onclick = () => abrirModalProduto(produto);
+        card.onclick = (e) => {
+            // Se clicar no botão "Ver Detalhes", não dispara o click do card duas vezes
+            if(e.target.tagName === 'BUTTON') return; 
+            abrirModalProduto(produto);
+        };
 
         card.innerHTML = `
             <img src="${produto.imagem}" alt="${produto.nome}" loading="lazy">
             <h3>${produto.nome}</h3>
             <span class="price">${formatarMoeda(produto.preco)}</span>
-            <button class="btn-detalhes">Ver Detalhes</button>
+            <button class="btn-detalhes" onclick="abrirModalProdutoId(${produto.id})">Ver Detalhes</button>
         `;
 
         container.appendChild(card);
     });
 }
 
+// Pequeno helper para o botão chamar a função passando o objeto certo
+function abrirModalProdutoId(id) {
+    const prod = produtos.find(p => p.id === id);
+    if(prod) abrirModalProduto(prod);
+}
+
 // =================================================================
-// 3. CARRINHO E CHECKOUT (Lógica Mantida)
+// 3. CARRINHO E CHECKOUT
 // =================================================================
 
 let carrinho = JSON.parse(localStorage.getItem('carrinho_mellie')) || [];
@@ -145,7 +187,6 @@ let carrinho = JSON.parse(localStorage.getItem('carrinho_mellie')) || [];
 function adicionarAoCarrinho() {
     if (!produtoAtualModal) return;
 
-    // Pega opções de cor (se houver)
     let corSelecionada = 'Padrão';
     const selects = document.querySelectorAll('.select-cor-dinamico');
     if (selects.length > 0) {
@@ -164,7 +205,6 @@ function adicionarAoCarrinho() {
         qtd: qtd
     };
 
-    // Verifica se já existe igual no carrinho para somar
     const existente = carrinho.find(i => i.id === item.id && i.cor === item.cor);
     if (existente) {
         existente.qtd += qtd;
@@ -219,7 +259,7 @@ function abrirModalCheckout() {
 function removerDoCarrinho(index) {
     carrinho.splice(index, 1);
     salvarCarrinho();
-    abrirModalCheckout(); // Recarrega a lista
+    abrirModalCheckout(); 
     atualizarContadorCarrinho();
 }
 
@@ -232,21 +272,17 @@ function abrirModalProduto(produto) {
     produtoAtualModal = produto;
     const modal = document.getElementById('modal-produto');
     
-    // Preenche dados básicos
     document.getElementById('modal-img').src = produto.imagem;
-    document.getElementById('modal-img').onclick = () => abrirLightbox(produto.imagem); // Zoom
+    document.getElementById('modal-img').onclick = () => abrirLightbox(produto.imagem);
     document.getElementById('modal-titulo').textContent = produto.nome;
     document.getElementById('modal-desc').textContent = produto.descricao || "Peça artesanal feita com carinho.";
     document.getElementById('modal-preco').textContent = formatarMoeda(produto.preco);
     
-    // Tamanho (se existir)
     const tamEl = document.getElementById('modal-tamanho');
     tamEl.textContent = produto.tamanho ? `Tamanho: ${produto.tamanho}` : '';
 
-    // Reset quantidade
     document.getElementById('qtd-selecionada').textContent = '1';
 
-    // Gerar Selects de Cor (Dinâmico do produtos.js)
     const containerCores = document.getElementById('container-opcoes-cores');
     containerCores.innerHTML = '';
 
@@ -256,8 +292,9 @@ function abrirModalProduto(produto) {
             div.className = 'grupo-select';
             
             let optionsHTML = '';
-            // Pega as cores da coleção definida no produto
-            const coresColecao = CORES_COLECAO[campo.paleta] || [];
+            // Se CORES_COLECAO existir (vem do produtos.js), usa ela, senão array vazio
+            const coresColecao = (typeof CORES_COLECAO !== 'undefined' && CORES_COLECAO[campo.paleta]) 
+                                 ? CORES_COLECAO[campo.paleta] : [];
             
             coresColecao.forEach(cor => {
                 optionsHTML += `<option value="${cor.nome}">${cor.nome}</option>`;
@@ -316,7 +353,6 @@ function enviarPedidoWhatsapp() {
 
     mensagem += `\n*TOTAL PRODUTOS: ${formatarMoeda(total)}*\n`;
 
-    // Dados de Entrega
     const tipoEntrega = document.querySelector('input[name="entrega"]:checked').value;
     if (tipoEntrega === 'retirada') {
         mensagem += `\n📦 Forma de Entrega: RETIRADA`;
@@ -362,7 +398,6 @@ window.onclick = function(event) {
 function fecharModalProduto() { document.getElementById('modal-produto').style.display = 'none'; }
 function fecharModalCheckout() { document.getElementById('modal-checkout').style.display = 'none'; }
 
-// Lightbox (Zoom)
 function abrirLightbox(src) {
     const lb = document.getElementById('lightbox');
     const img = document.getElementById('imagem-destaque');
