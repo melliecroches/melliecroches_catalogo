@@ -409,7 +409,22 @@ header {
 }
 /* Preview Bolinhas */
 .preview-cores-modal { display: flex; gap: 6px; margin-bottom: 8px; }
-.bolinha-cor { width: 22px; height: 22px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1); }
+.bolinha-cor {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.15);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.bolinha-cor:hover {
+    transform: scale(1.1);
+}
+
+.bolinha-cor.selecionada {
+    box-shadow: 0 0 0 3px #d88ea3;
+}
 
 /* Ações Compra */
 .acoes-compra { margin-top: 20px; }

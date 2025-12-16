@@ -215,20 +215,21 @@ function adicionarAoCarrinho() {
     if (!produtoAtualModal) return;
 
     let corSelecionada = 'Padrão';
-    const selects = document.querySelectorAll('.select-cor-dinamico');
-    
-    // VALIDAÇÃO: Obriga a escolher cor se houver opção
-    if (selects.length > 0) {
-        for (const select of selects) {
-            if (select.value === "") {
-                alert("⚠️ Por favor, selecione a cor desejada antes de adicionar.");
-                select.focus(); 
-                return; 
+
+    if (produtoAtualModal.camposCor && produtoAtualModal.camposCor.length > 0) {
+
+        // Verifica se escolheu todas as cores
+        for (const campo of produtoAtualModal.camposCor) {
+            if (!coresSelecionadasModal[campo.label]) {
+                alert(`⚠️ Selecione a cor de: ${campo.label}`);
+                return;
             }
         }
-        // Junta as escolhas (ex: "Base: Azul / Flor: Rosa")
-        const escolhas = Array.from(selects).map(s => s.options[s.selectedIndex].text);
-        corSelecionada = escolhas.join(' / ');
+
+        // Monta texto final
+        corSelecionada = Object.entries(coresSelecionadasModal)
+            .map(([parte, cor]) => `${parte}: ${cor}`)
+            .join(' / ');
     }
 
     const qtd = parseInt(document.getElementById('qtd-selecionada').textContent);
@@ -322,8 +323,10 @@ function removerDoCarrinho(index) {
 // 5. MODAL DE PRODUTO COMPLETO
 // =================================================================
 let produtoAtualModal = null;
+let coresSelecionadasModal = {};
 
 function abrirModalProduto(produto) {
+    coresSelecionadasModal = {};
     produtoAtualModal = produto;
     const modal = document.getElementById('modal-produto');
     const imgPrincipal = document.getElementById('modal-img');
@@ -372,53 +375,70 @@ function abrirModalProduto(produto) {
     containerCores.innerHTML = '';
 
     if (produto.camposCor && produto.camposCor.length > 0) {
-        
-        // Coleta cores únicas para o preview
-        let coresUnicasDoProduto = new Map();
+
+        // Texto de instrução
+        const instrucao = document.createElement('p');
+        instrucao.textContent = 'Selecione a(s) cor(es):';
+        instrucao.style.fontSize = '0.85rem';
+        instrucao.style.fontWeight = '600';
+        instrucao.style.marginTop = '15px';
+        instrucao.style.marginBottom = '5px';
+        instrucao.style.color = '#555';
+        containerCores.appendChild(instrucao);
+
+        // Para cada parte do produto (miolo, pétalas...)
         produto.camposCor.forEach(campo => {
-            const coresDaPaleta = (typeof CORES_COLECAO !== 'undefined' && CORES_COLECAO[campo.paleta]) 
-                                  ? CORES_COLECAO[campo.paleta] : [];
-            coresDaPaleta.forEach(cor => {
-                if (!coresUnicasDoProduto.has(cor.nome)) coresUnicasDoProduto.set(cor.nome, cor);
+
+            // Bloco de uma parte
+            const bloco = document.createElement('div');
+            bloco.style.marginBottom = '14px';
+
+            // Título (ex: Cor do Miolo)
+            const titulo = document.createElement('label');
+            titulo.textContent = campo.label;
+            titulo.style.display = 'block';
+            titulo.style.fontSize = '0.85rem';
+            titulo.style.fontWeight = '600';
+            titulo.style.marginBottom = '6px';
+            bloco.appendChild(titulo);
+
+            // Linha das bolinhas
+            const linhaBolinhas = document.createElement('div');
+            linhaBolinhas.className = 'preview-cores-modal';
+
+            // Pega as cores da paleta certa
+            const cores =
+                (typeof CORES_COLECAO !== 'undefined' && CORES_COLECAO[campo.paleta])
+                    ? CORES_COLECAO[campo.paleta]
+                    : [];
+
+            cores.forEach(cor => {
+                const bolinha = document.createElement('div');
+                bolinha.className = 'bolinha-cor';
+                bolinha.style.backgroundColor = cor.hex;
+                bolinha.title = cor.nome;
+
+                bolinha.onclick = () => {
+
+                    // Remove seleção só desse grupo
+                    linhaBolinhas.querySelectorAll('.bolinha-cor')
+                        .forEach(b => b.classList.remove('selecionada'));
+
+                    // Marca a clicada
+                    bolinha.classList.add('selecionada');
+
+                    // Salva a escolha dessa parte
+                    coresSelecionadasModal[campo.label] = cor.nome;
+                };
+
+                linhaBolinhas.appendChild(bolinha);
             });
-        });
 
-        // Exibe Paleta Visual (Bolinhas)
-        if (coresUnicasDoProduto.size > 0) {
-            const divPreview = document.createElement('div');
-            divPreview.className = 'preview-cores-modal';
-            coresUnicasDoProduto.forEach((cor) => {
-                 const bolinha = document.createElement('div');
-                 bolinha.className = 'bolinha-cor';
-                 bolinha.style.backgroundColor = cor.hex;
-                 bolinha.title = cor.nome;
-                 divPreview.appendChild(bolinha);
-            });
-            containerCores.appendChild(divPreview);
-        }
-
-        // Cria Selects
-        produto.camposCor.forEach(campo => {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'grupo-select';
-            
-            const coresDaPaleta = (typeof CORES_COLECAO !== 'undefined' && CORES_COLECAO[campo.paleta]) 
-                                 ? CORES_COLECAO[campo.paleta] : [];
-
-            let optionsHTML = `<option value="" selected disabled>Selecione a cor...</option>`;
-            coresDaPaleta.forEach(cor => {
-                optionsHTML += `<option value="${cor.nome}">${cor.nome}</option>`;
-            });
-
-            wrapper.innerHTML = `
-                <label>${campo.label}:</label>
-                <select class="select-cor-dinamico">
-                    ${optionsHTML}
-                </select>
-            `;
-            containerCores.appendChild(wrapper);
+            bloco.appendChild(linhaBolinhas);
+            containerCores.appendChild(bloco);
         });
     }
+
 
     modal.style.display = 'flex';
 }
