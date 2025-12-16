@@ -189,7 +189,18 @@ function adicionarAoCarrinho() {
 
     let corSelecionada = 'Padrão';
     const selects = document.querySelectorAll('.select-cor-dinamico');
+    
+    // VERIFICAÇÃO DE SEGURANÇA (NOVO)
     if (selects.length > 0) {
+        // Verifica se tem algum select que ainda está vazio (valor "")
+        for (const select of selects) {
+            if (select.value === "") {
+                alert("⚠️ Por favor, escolha a cor antes de adicionar!");
+                select.focus(); // Dá destaque para o campo que falta
+                return; // Para tudo e não adiciona
+            }
+        }
+
         const escolhas = Array.from(selects).map(s => s.options[s.selectedIndex].text);
         corSelecionada = escolhas.join(' / ');
     }
@@ -294,59 +305,42 @@ function abrirModalProduto(produto) {
     const imgPrincipal = document.getElementById('modal-img');
     const galeriaContainer = document.getElementById('galeria-miniaturas');
     
-    // 1. Define a imagem principal inicial
+    // 1. Imagens e Galeria (Mantido igual)
     imgPrincipal.src = produto.imagem;
-    imgPrincipal.onclick = () => abrirLightbox(imgPrincipal.src); // Zoom
+    imgPrincipal.onclick = () => abrirLightbox(imgPrincipal.src);
 
-    // 2. Lógica da Galeria (CORRIGIDA)
     galeriaContainer.innerHTML = ''; 
-
-    // AQUI ESTAVA O ERRO. AGORA CORRIGIDO:
-    // Cria uma lista começando com a imagem principal
     let listaImagens = [produto.imagem];
-
-    // Se tiver fotos extras, adiciona elas na lista (sem apagar a principal)
     if (produto.fotosExtras && produto.fotosExtras.length > 0) {
         listaImagens = listaImagens.concat(produto.fotosExtras);
     }
-    
-    // Remove duplicatas (caso você tenha colocado a imagem principal dentro das extras sem querer)
     listaImagens = [...new Set(listaImagens)];
 
-    // Só exibe a galeria se tiver mais de 1 foto no total
     if (listaImagens.length > 1) { 
         listaImagens.forEach((fotoSrc) => {
             const thumb = document.createElement('img');
             thumb.src = fotoSrc;
-            
-            // Se essa miniatura for igual à foto que está grande agora, marca como ativa
             if (fotoSrc === imgPrincipal.src) thumb.classList.add('ativa');
-
             thumb.onclick = () => {
-                // Troca a imagem grande
                 imgPrincipal.src = fotoSrc;
-                imgPrincipal.onclick = () => abrirLightbox(fotoSrc); // Atualiza zoom
-
-                // Atualiza borda rosa
+                imgPrincipal.onclick = () => abrirLightbox(fotoSrc); 
                 document.querySelectorAll('.galeria-miniaturas img').forEach(img => img.classList.remove('ativa'));
                 thumb.classList.add('ativa');
             };
-
             galeriaContainer.appendChild(thumb);
         });
     }
 
-    // 3. Preenche textos
+    // 2. Textos (Mantido igual)
     document.getElementById('modal-titulo').textContent = produto.nome;
     document.getElementById('modal-desc').textContent = produto.descricao || "Peça artesanal feita com carinho.";
     document.getElementById('modal-preco').textContent = formatarMoeda(produto.preco);
     
     const tamEl = document.getElementById('modal-tamanho');
     tamEl.textContent = produto.tamanho ? `Tamanho: ${produto.tamanho}` : '';
-
     document.getElementById('qtd-selecionada').textContent = '1';
 
-    // 4. Selects de Cores
+    // 3. SELECTS DE CORES (MUDANÇA AQUI!)
     const containerCores = document.getElementById('container-opcoes-cores');
     containerCores.innerHTML = '';
 
@@ -354,13 +348,23 @@ function abrirModalProduto(produto) {
         produto.camposCor.forEach(campo => {
             const div = document.createElement('div');
             div.className = 'grupo-select';
-            let optionsHTML = '';
+            
+            // Adicionamos a opção padrão "Selecione..." vazia e desabilitada
+            let optionsHTML = `<option value="" selected disabled>Selecione a cor...</option>`;
+            
             const coresColecao = (typeof CORES_COLECAO !== 'undefined' && CORES_COLECAO[campo.paleta]) 
                                  ? CORES_COLECAO[campo.paleta] : [];
+            
             coresColecao.forEach(cor => {
                 optionsHTML += `<option value="${cor.nome}">${cor.nome}</option>`;
             });
-            div.innerHTML = `<label>${campo.label}:</label><select class="select-cor-dinamico">${optionsHTML}</select>`;
+
+            div.innerHTML = `
+                <label>${campo.label}:</label>
+                <select class="select-cor-dinamico" style="cursor:pointer;">
+                    ${optionsHTML}
+                </select>
+            `;
             containerCores.appendChild(div);
         });
     }
