@@ -41,7 +41,7 @@ const produtos = [
             { id: "miolo", label: "Cor do Miolo", paleta: "florescer" },
             { id: "petalas", label: "Cor das Pétalas", paleta: "florescer" }
         ],
-        //descricao: "Prepare-se para se apaixonar pelo nosso Brinco Flor Encantada! Esta peça exala elegância e fineza. Este brinco deslumbrante e irresistível é a escolha perfeita para adicionar um toque de sofisticação e beleza ao seu visual.",
+        descricao: "Encante-se com o Brinco Flor Encantada: uma peça elegante e delicada para trazer sofisticação ao seu visual.",
         tamanho: "3,5 cm",
         fotosExtras: [
             "imagens/florescer/f01_2.jpg"
@@ -53,7 +53,7 @@ const produtos = [
         preco: 10.00,
         imagem: "imagens/florescer/f02_1.jpg",
         categoria: "florescer", 
-        //descricao: "Deixe a energia radiante dos girassóis iluminarem o seu dia com nosso Brinco Girassol! Seu design vívido e vibrante é perfeito para adicionar um toque de sol e felicidade ao seu visual.",
+        descricao: "Deixe a energia dos girassóis iluminar o seu dia com o Brinco Girassol, trazendo vividez e alegria.",
         tamanho: "2,4 cm",
         fotosExtras: [
             "imagens/florescer/f02_2.jpg"
@@ -66,9 +66,9 @@ const produtos = [
         imagem: "imagens/florescer/f03_1.jpg",
         categoria: "florescer", 
         camposCor: [
-            { id: "petalas", label: "Cor das Pétalas", paleta: "florescer" }
+            { id: "petalas", label: "Cor da Flor", paleta: "florescer" }
         ],
-        //descricao: "Encante-se com a beleza sutil do nosso Brinco Pétala de Cristal! Suas delicadas pétalas de crochê parecem ser feitas de cristal. É uma escolha perfeita para quem busca um toque de brilho e glamour discreto em qualquer ocasião.",
+        descricao: "Encante-se com o Brinco Pétala de Cristal, delicado como cristal e perfeito para um brilho discreto em qualquer ocasião.",
         tamanho: "2,6 cm",
         fotosExtras: [
             "imagens/florescer/f03_2.jpg"
@@ -81,9 +81,9 @@ const produtos = [
         imagem: "imagens/florescer/f04_1.jpg",
         categoria: "florescer", 
         camposCor: [
-            { id: "petalas", label: "Cor das Pétalas", paleta: "florescer" }
+            { id: "petalas", label: "Cor da Flor", paleta: "florescer" }
         ],
-        //descricao: "Destaque-se com a grandiosidade do Brinco Flor Majestosa! Seu design imponente e refinado o tornam único. Aposte nesta peça para expressar sua confiança e estilo.",
+        descricao: "Destaque-se com o Brinco Flor Majestosa, uma peça imponente e refinada para expressar confiança e estilo.",
         tamanho: "4,2 cm",
         fotosExtras: [
             "imagens/florescer/f04_2.jpg"
@@ -96,9 +96,9 @@ const produtos = [
         imagem: "imagens/florescer/f05_1.jpg",
         categoria: "florescer", 
         camposCor: [
-            { id: "petalas", label: "Cor das Pétalas", paleta: "florescer" }
+            { id: "petalas", label: "Cor da Flor", paleta: "florescer" }
         ],
-        //descricao: "Descubra o charme do nosso Brinco Flor Delicata! Este acessório suave e gracioso adiciona delicadeza a qualquer look. Perfeito para mulheres que valorizam a beleza nos detalhes.",
+        descricao: "Descubra o Brinco Flor Delicata, um acessório suave e gracioso que traz delicadeza e beleza aos detalhes.",
         tamanho: "3,5 cm",
         fotosExtras: [
             "imagens/florescer/f05_2.jpg",
@@ -112,9 +112,9 @@ const produtos = [
         imagem: "imagens/florescer/f06.jpg",
         categoria: "florescer", 
         camposCor: [
-            { id: "petalas", label: "Cor das Pétalas", paleta: "florescer" }
+            { id: "petalas", label: "Cor da Flor", paleta: "florescer" }
         ],
-        //descricao: "Deixe sua beleza florescer com o Brinco Flor Harmonia. Com suas pétalas vazadas, este brinco combina leveza e frescor, oferecendo um visual suave e natural que complementa qualquer estilo.",
+        descricao: "Deixe sua beleza florescer com o Brinco Flor Harmonia, leve e natural, com pétalas vazadas que encantam.",
         tamanho: "3 cm"
     },
     {
@@ -127,7 +127,7 @@ const produtos = [
             { id: "flor1", label: "Cor da Flor Superior", paleta: "florescer" },
             { id: "flor2", label: "Cor da Flor Inferior", paleta: "florescer" }
         ],
-        //descricao: "Viva a experiência de um visual inovador com o Brinco Dupla Floral. As flores interligadas criam um visual dinâmico e ousado, perfeito para quem quer ir além do convencional.",
+        descricao: "Viva um visual inovador com o Brinco Dupla Floral, flores interligadas que criam um estilo ousado e moderno.",
         tamanho: "5 cm"
     },
     {
@@ -140,7 +140,7 @@ const produtos = [
             { id: "miolo", label: "Cor do Miolo", paleta: "florescer" },
             { id: "petalas", label: "Cor das Pétalas", paleta: "florescer" }
         ],
-        //descricao: "Experimente a elegância sutil com o Brinco Flor Lumina. Seus contornos delicados e o design inspirado em um esboço artístico trazem um toque de luminosidade e charme. Ideal para iluminar seu look com um toque sofisticado e único.",
+        descricao: "Experimente a elegância do Brinco Flor Lumina, com design delicado e artístico que ilumina seu look.",
         tamanho: "3,5 cm"
     },
     {
@@ -152,7 +152,7 @@ const produtos = [
         camposCor: [
             { id: "petalas", label: "Cor das Pétalas", paleta: "florescer" }
         ],
-        //descricao: "Adicione um toque de romance ao seu visual com o Brinco A Rosa. Ideal para eventos especiais ou para destacar seu estilo no dia a dia, trazendo charme a qualquer look.",
+        descricao: "Adicione um toque de romance ao seu visual com o Brinco A Rosa, ideal para trazer um charme ao seu look.",
         tamanho: "3,5cm"
     },
     {
@@ -165,7 +165,7 @@ const produtos = [
             { id: "petalas", label: "Cor das Pétalas", paleta: "florescer" },
             { id: "detalhes-borda", label: "Cor dos Detalhes da Borda", paleta: "florescer" }
         ],
-        ////descricao: "O Brinco O Cravo destaca seu estilo. Seu design marcante oferece versatilidade e um toque vibrante e moderno a qualquer look, garantindo que você se sinta confiante e única.",
+        descricao: "O Brinco O Cravo destaca seu estilo com design marcante, versátil e moderno, para um look confiante e único.",
         tamanho: "4 cm"
     },
 ];
