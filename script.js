@@ -271,9 +271,52 @@ let produtoAtualModal = null;
 function abrirModalProduto(produto) {
     produtoAtualModal = produto;
     const modal = document.getElementById('modal-produto');
+    const imgPrincipal = document.getElementById('modal-img');
+    const galeriaContainer = document.getElementById('galeria-miniaturas');
     
-    document.getElementById('modal-img').src = produto.imagem;
-    document.getElementById('modal-img').onclick = () => abrirLightbox(produto.imagem);
+    // 1. Define a imagem principal inicial
+    imgPrincipal.src = produto.imagem;
+    imgPrincipal.onclick = () => abrirLightbox(imgPrincipal.src); // Zoom
+
+    // 2. Lógica da Galeria (CORRIGIDA)
+    galeriaContainer.innerHTML = ''; 
+
+    // AQUI ESTAVA O ERRO. AGORA CORRIGIDO:
+    // Cria uma lista começando com a imagem principal
+    let listaImagens = [produto.imagem];
+
+    // Se tiver fotos extras, adiciona elas na lista (sem apagar a principal)
+    if (produto.fotosExtras && produto.fotosExtras.length > 0) {
+        listaImagens = listaImagens.concat(produto.fotosExtras);
+    }
+    
+    // Remove duplicatas (caso você tenha colocado a imagem principal dentro das extras sem querer)
+    listaImagens = [...new Set(listaImagens)];
+
+    // Só exibe a galeria se tiver mais de 1 foto no total
+    if (listaImagens.length > 1) { 
+        listaImagens.forEach((fotoSrc) => {
+            const thumb = document.createElement('img');
+            thumb.src = fotoSrc;
+            
+            // Se essa miniatura for igual à foto que está grande agora, marca como ativa
+            if (fotoSrc === imgPrincipal.src) thumb.classList.add('ativa');
+
+            thumb.onclick = () => {
+                // Troca a imagem grande
+                imgPrincipal.src = fotoSrc;
+                imgPrincipal.onclick = () => abrirLightbox(fotoSrc); // Atualiza zoom
+
+                // Atualiza borda rosa
+                document.querySelectorAll('.galeria-miniaturas img').forEach(img => img.classList.remove('ativa'));
+                thumb.classList.add('ativa');
+            };
+
+            galeriaContainer.appendChild(thumb);
+        });
+    }
+
+    // 3. Preenche textos
     document.getElementById('modal-titulo').textContent = produto.nome;
     document.getElementById('modal-desc').textContent = produto.descricao || "Peça artesanal feita com carinho.";
     document.getElementById('modal-preco').textContent = formatarMoeda(produto.preco);
@@ -283,6 +326,7 @@ function abrirModalProduto(produto) {
 
     document.getElementById('qtd-selecionada').textContent = '1';
 
+    // 4. Selects de Cores
     const containerCores = document.getElementById('container-opcoes-cores');
     containerCores.innerHTML = '';
 
@@ -290,35 +334,18 @@ function abrirModalProduto(produto) {
         produto.camposCor.forEach(campo => {
             const div = document.createElement('div');
             div.className = 'grupo-select';
-            
             let optionsHTML = '';
-            // Se CORES_COLECAO existir (vem do produtos.js), usa ela, senão array vazio
             const coresColecao = (typeof CORES_COLECAO !== 'undefined' && CORES_COLECAO[campo.paleta]) 
                                  ? CORES_COLECAO[campo.paleta] : [];
-            
             coresColecao.forEach(cor => {
                 optionsHTML += `<option value="${cor.nome}">${cor.nome}</option>`;
             });
-
-            div.innerHTML = `
-                <label>${campo.label}:</label>
-                <select class="select-cor-dinamico">
-                    ${optionsHTML}
-                </select>
-            `;
+            div.innerHTML = `<label>${campo.label}:</label><select class="select-cor-dinamico">${optionsHTML}</select>`;
             containerCores.appendChild(div);
         });
     }
 
     modal.style.display = 'flex';
-}
-
-function mudarQtd(delta) {
-    const span = document.getElementById('qtd-selecionada');
-    let atual = parseInt(span.textContent);
-    atual += delta;
-    if (atual < 1) atual = 1;
-    span.textContent = atual;
 }
 
 // =================================================================

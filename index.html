@@ -16,7 +16,7 @@
         <div class="header-container">
             <h1 class="logo-site">Melliê Crochês</h1>
             <div class="busca-wrapper">
-                <input type="text" id="campo-busca" placeholder="🔍 Buscar (ex: Pérola)...">
+                <input type="text" id="campo-busca" placeholder="🔍 Buscar (ex: Girassol)...">
             </div>
         </div>
     </header>
@@ -101,23 +101,32 @@
     <div id="modal-produto" class="modal">
         <div class="modal-content">
             <span class="close-btn" onclick="fecharModalProduto()">&times;</span>
+            
             <div class="modal-body">
                 <div class="modal-img-container">
                     <img id="modal-img" src="" alt="Produto">
+                    
+                    <div id="galeria-miniaturas" class="galeria-miniaturas">
+                        </div>
                 </div>
+                
                 <div class="modal-info">
-                    <h2 id="modal-titulo"></h2>
-                    <p id="modal-desc"></p>
+                    <h2 id="modal-titulo">Nome do Produto</h2>
+                    <p id="modal-desc">Descrição...</p>
                     <p id="modal-tamanho" class="info-extra"></p>
+                    
                     <div id="container-opcoes-cores"></div>
+
                     <div class="modal-preco-row">
-                        <span id="modal-preco"></span>
+                        <span id="modal-preco">R$ 0,00</span>
                     </div>
+
                     <div class="controles-qtd">
                         <button onclick="mudarQtd(-1)">-</button>
                         <span id="qtd-selecionada">1</span>
                         <button onclick="mudarQtd(1)">+</button>
                     </div>
+
                     <button id="btn-add-carrinho" onclick="adicionarAoCarrinho()">Adicionar ao Carrinho</button>
                 </div>
             </div>
