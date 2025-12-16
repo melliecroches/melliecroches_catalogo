@@ -223,28 +223,48 @@ function atualizarContadorCarrinho() {
     document.getElementById('contador-carrinho').textContent = count;
 }
 
+// --- NOVA FUNÇÃO LIMPAR TUDO ---
+function limparCarrinho() {
+    if (confirm("Tem certeza que deseja esvaziar todo o carrinho?")) {
+        carrinho = [];
+        salvarCarrinho();
+        abrirModalCheckout(); // Atualiza a tela (vai mostrar vazio)
+        atualizarContadorCarrinho();
+    }
+}
+
 function abrirModalCheckout() {
     const modal = document.getElementById('modal-checkout');
     const lista = document.getElementById('lista-itens-carrinho');
     const totalEl = document.getElementById('valor-total-carrinho');
+    const btnLimpar = document.getElementById('btn-limpar-tudo'); // O novo botão
     
     lista.innerHTML = '';
     let total = 0;
 
     if (carrinho.length === 0) {
-        lista.innerHTML = '<p style="text-align:center; padding:20px;">Seu carrinho está vazio.</p>';
+        lista.innerHTML = `
+            <div style="text-align:center; padding: 40px 20px;">
+                <p style="font-size: 3rem;">🛒</p>
+                <p style="color:#888;">Seu carrinho está vazio.</p>
+                <button onclick="fecharModalCheckout()" style="margin-top:15px; background:none; border:1px solid #ddd; padding:8px 15px; border-radius:20px; cursor:pointer;">Voltar para a loja</button>
+            </div>
+        `;
+        if(btnLimpar) btnLimpar.style.display = 'none'; // Esconde botão limpar
     } else {
+        if(btnLimpar) btnLimpar.style.display = 'block'; // Mostra botão limpar
+
         carrinho.forEach((item, index) => {
             const div = document.createElement('div');
             div.className = 'item-carrinho';
             div.innerHTML = `
                 <div class="item-info">
-                    <h4>${item.nome} <span style="font-size:0.8rem; color:#888;">(x${item.qtd})</span></h4>
-                    <span>${item.cor}</span>
+                    <h4>${item.nome}</h4>
+                    <span>${item.cor} • Qtd: ${item.qtd}</span>
                 </div>
                 <div style="display:flex; align-items:center;">
                     <span class="item-total">${formatarMoeda(item.preco * item.qtd)}</span>
-                    <button class="btn-remover" onclick="removerDoCarrinho(${index})">Remover</button>
+                    <button class="btn-remover" onclick="removerDoCarrinho(${index})" title="Remover item">&times;</button>
                 </div>
             `;
             lista.appendChild(div);
