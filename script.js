@@ -485,16 +485,17 @@ function enviarPedidoWhatsapp() {
 
     const tipoEntrega = document.querySelector('input[name="entrega"]:checked').value;
     if (tipoEntrega === 'retirada') {
-        mensagem += `\n📦 Entrega: RETIRADA EM MÃOS`;
+        mensagem += `\n📦 Entrega: RETIRADA NA UFRN`;
     } else {
         const rua = document.getElementById('end-rua').value;
+        const numero = document.getElementById('end-numero').value;
         const bairro = document.getElementById('end-bairro').value;
         const cidade = document.getElementById('end-cidade').value;
 
-        if (!rua || !bairro) return alert("Por favor, preencha o endereço de entrega.");
+        if (!rua || !numero || !bairro || !cidade) return alert("Por favor, preencha o endereço de entrega.");
         
         mensagem += `\n📦 Entrega: ENVIO`;
-        mensagem += `\n📍 Endereço: ${rua}, ${document.getElementById('end-numero').value} - ${bairro}, ${cidade}`;
+        mensagem += `\n📍 Endereço: ${rua}, ${numero} - ${bairro}, ${cidade}`;
     }
     limparCarrinho();
     const link = `https://wa.me/${CONFIG.telefone}?text=${encodeURIComponent(mensagem)}`;
